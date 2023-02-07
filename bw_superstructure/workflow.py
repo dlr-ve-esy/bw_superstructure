@@ -1,9 +1,7 @@
 ﻿import pathlib as pt
 import brightway2 as bw
 
-from .adapted.controllers_database import (
-    relink_database,
-)
+
 from .lcacalculation import (
     get_scenario_difference_dataframe,
     calculate_lca_results,
@@ -11,6 +9,9 @@ from .lcacalculation import (
 )
 
 from .bw import get_functional_units, get_lcia_methods
+from bw_superstructure.bwutils.strategies import (
+    relink_exchanges_existing_db,
+)
 
 
 def relink_database_to_new_background(
@@ -35,7 +36,13 @@ def relink_database_to_new_background(
 
         print(f"created new DB to be relinked: {db_name_relinked}")
 
-        relink_database(db_name_relinked, db_name_old_bg, db_name_new_bg)
+        fg_db = bw.Database(
+            db_name_relinked
+        )  # foreground DB to relink from old background to new background DB
+        new_bg_db = bw.Database(
+            db_name_new_bg
+        )  # target background DB we want to relink to
+        relink_exchanges_existing_db(fg_db, db_name_old_bg, new_bg_db)
 
     else:
         assert (
