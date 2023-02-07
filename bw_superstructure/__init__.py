@@ -2,9 +2,11 @@
 #
 # SPDX-License-Identifier: MIT
 
-from .workflow import (
-    relink_database_to_new_background,
-    create_calculation_setup,
+from .tools import (
+    relink_database_to_new_background,)
+from .calculationsetup import (
+    create_calculation_setup,)
+from .lcacalculation import (
     calculate_scenario_LCA,
 )
 

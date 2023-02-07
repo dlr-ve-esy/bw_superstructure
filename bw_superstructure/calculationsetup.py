@@ -145,3 +145,41 @@ def get_bw2_lcia_method(
     print(f"selected LCIA method: {lcia_method}")
 
     return lcia_method
+
+
+def create_calculation_setup(
+    db_name,
+    calc_setup_name: str,
+    fp_functional_units: pt.Path,
+    fp_lcia_methods: pt.Path,
+    db_name_new_bg: str,
+    db_name_ecoinvent="ecoinvent38_cutoff",
+):
+    """creates a calculation setup using brightway2.
+
+    Args:
+        calc_setup_name (str): _description_
+        functional_units (List): List of bw2-activity objects.
+        lcia_methods (dict): dict with key = str of from MethodTuple.internal_name, value = MethodTuple for that method
+    """
+
+    functional_units = get_functional_units(
+        fp_functional_units,
+    )
+
+    lcia_methods = get_lcia_methods(fp_lcia_methods)
+
+    # simple calc setup
+    bw.calculation_setups[calc_setup_name] = {
+        "inv": [{(ifu): 1} for ifu in functional_units],
+        "ia": [imeth.bw2_object for imeth in lcia_methods.values()],
+    }
+
+    # Keys:
+    #  `inv`: List of functional units, e.g. ``[{(key): amount}, {(key): amount}]``
+    #  `ia`: List of LCIA methods, e.g. ``[(method), (method)]``.
+    # note that calculation_setup is just a dict, therefore overwrites if same name is chosen
+
+    print(
+        f"calculation setup created: \n name: {calc_setup_name} \n {len(functional_units)} functional units: \n {[ifu for ifu in functional_units]} \n {len(lcia_methods)} LCIA Methods: \n {[imeth.internal_name for imeth in lcia_methods.values()]}"
+    )

@@ -83,3 +83,22 @@ def export_lca_scores(mlca, fp_lca_results):
     print(
         f"Export of LCA results into {idx_fu+1} excel files done to: {fp_lca_results}",
     )
+
+
+def calculate_scenario_LCA(
+    calc_setup_name: str,
+    path_to_SDF: pt.Path,
+    sdf_sheet_idx=0,
+    export_results_to_excel=True,
+    fp_export_lca_results=pt.Path("./exports"),
+):
+
+    scenario_diff_file = get_scenario_difference_dataframe(
+        path_to_SDF, sheet_idx=sdf_sheet_idx
+    )
+    mlca, contributions, mc = calculate_lca_results(calc_setup_name, scenario_diff_file)
+
+    if export_results_to_excel:
+        export_lca_scores(mlca, fp_export_lca_results)
+
+    return mlca, contributions, mc
