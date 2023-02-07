@@ -6,9 +6,10 @@ from bw_superstructure.superstructure.activities import (
 )
 from bw_superstructure.superstructure.utils import guess_flow_type
 
-# Note: source: based on: activity-browser: method from class SuperstructureManager(object)
+# Note: source: based on: activity-browser: methods from class SuperstructureManager(object)
 # (Lib\site-packages\activity_browser\bwutils\superstructure\manager.py)
 # branch: activity-browser-dev; version: 2022.11.16
+# adaptations: extracted the methods of the class SuperstructureManager(object) as stand-alone functions
 
 EXCHANGE_KEYS = pd.Index(["from key", "to key"])
 INDEX_KEYS = pd.Index(["from key", "to key", "flow type"])

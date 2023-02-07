@@ -2,7 +2,7 @@
 import pathlib as pt
 import brightway2 as bw
 
-from .adapted.superstructure_manager import (
+from .superstructure.manager import (
     format_dataframe,
 )
 
