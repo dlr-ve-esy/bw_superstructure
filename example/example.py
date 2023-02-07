@@ -46,12 +46,9 @@ bwss.relink_database_to_new_background(
 
 
 bwss.create_calculation_setup(
-    db_original_name,
     calc_setup_name,
     fp_functional_units,
     fp_lcia_methods,
-    db_name_new_bg,
-    db_name_ecoinvent="ecoinvent38_cutoff",
 )
 
 

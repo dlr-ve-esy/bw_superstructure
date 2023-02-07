@@ -148,12 +148,9 @@ def get_bw2_lcia_method(
 
 
 def create_calculation_setup(
-    db_name,
     calc_setup_name: str,
     fp_functional_units: pt.Path,
     fp_lcia_methods: pt.Path,
-    db_name_new_bg: str,
-    db_name_ecoinvent="ecoinvent38_cutoff",
 ):
     """creates a calculation setup using brightway2.
 
