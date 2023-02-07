@@ -61,10 +61,7 @@ def create_calculation_setup(
     """
 
     functional_units = get_functional_units(
-        db_name,
         fp_functional_units,
-        db_name_new_bg,
-        db_name_ecoinvent="ecoinvent38_cutoff",
     )
 
     lcia_methods = get_lcia_methods(fp_lcia_methods)

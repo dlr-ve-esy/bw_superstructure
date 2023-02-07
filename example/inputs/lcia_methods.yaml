@@ -1,0 +1,13 @@
+﻿climate_change:
+  - "IPCC 2013" # official BW2-string
+  - "climate change" # official BW2-string
+  - "GWP 100a" # official BW2-string
+  - "climate change" # own name, free to choose
+  - "CC" # own name, free to choose
+
+resources:
+  - "EF v3.0"  # official BW2-string 
+  - "material resources: metals/minerals"  # official BW2-string
+  - "abiotic depletion potential (ADP): elements (ultimate reserves)"  # official BW2-string
+  - "resources"
+  - "ADP"

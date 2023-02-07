@@ -24,85 +24,47 @@ MethodTuple = namedtuple(
 
 
 def get_functional_units(
-    db_name,
     fp_functional_units: pt.Path,
-    db_name_new_bg=None,  # : str,
-    db_name_ecoinvent=None,  # : str,
 ):
 
     functional_units = []
-    allowed_db_names = [
-        "fritsb_relinked",
-        "ecoinvent_in_superstructure",
-        "ecoinvent",
-    ]  # FIXME: allowed db names do not apply here
-    # so far these two db-names are allowed in the excel file
-    # fritsb_relinked = exported DB by fritsb and relinked to superstructure
-    # ecoinvent_in_superstructure = if process is an ecoinvent process and should be taken from the superstructure
-    # ecoinvent = if process is in original ecoinvent, assuming this is called "ecoinvent38_cutoff"  # TODO: this could be done more explicitly
 
     fu_input = pd.read_excel(fp_functional_units, header=0)
     fu_input = fu_input.fillna("")
 
-    relevant_databases = list(fu_input["database"].unique())
-    print("relevant DBs:", relevant_databases)
+    selected_dbs = list(fu_input["database"].unique())
+    print("DBs of functional units:", selected_dbs)
 
-    assert all(
-        idb in allowed_db_names for idb in relevant_databases
-    ), f"there are database names in the excel sheet which are not allowed. Allowed names are: {allowed_db_names}"
+    available_dbs = list(bw.databases)
 
-    db_out_relinked = (
-        bw.Database(db_name + "_relinked")
-        if "fritsb_relinked" in relevant_databases
-        else None
-    )
+    unavailable_dbs = [idb for idb in selected_dbs if idb not in available_dbs]
+    assert (
+        not unavailable_dbs
+    ), f"the following database names in the functional units from the excel sheet are not in the project: {unavailable_dbs} \n DBs in the project are: {available_dbs}"
 
-    db_new_bg = (
-        bw.Database(db_name_new_bg)
-        if "ecoinvent_in_superstructure" in relevant_databases
-        else None
-    )
+    for (
+        idx,
+        irow,
+    ) in fu_input.iterrows():
+        # TODO: could be optimized by first grouping the df by db-name and then loop over these groups, to avoid changing dbs repeatedly
 
-    db_ecoinvent = (
-        bw.Database(db_name_ecoinvent) if "ecoinvent" in relevant_databases else None
-    )
-
-    for idx, irow in fu_input.iterrows():
-        idb = irow["database"]
+        idb_name = irow["database"]
         iproduct = irow["product"]
         iprocess = (
             "operation only - " + irow["process"]
-            if idb == "fritsb_relinked"
+            if idb_name == "fritsb_relinked"
             else irow["process"]
         )
         iloc = irow["location"]
 
-        if idb == "fritsb_relinked":
-            acts = db_out_relinked.search(
-                iprocess,  # process name
-                filter={
-                    "location": iloc,
-                },
-            )  # requires at least 1 string, cannot combine the str + keyword in filter
+        acts = bw.Database(idb_name).search(
+            iprocess,  # process name
+            filter={
+                "location": iloc,
+            },
+        )  # requires at least 1 string, cannot combine the str + keyword in filter
 
-            # ensure exact match of c_name and c_product, since search above does only partial matches (sub-strings)
-
-        elif idb == "ecoinvent_in_superstructure":
-            acts = db_new_bg.search(
-                iprocess,  # process name
-                filter={
-                    "location": iloc,
-                },
-            )
-
-        elif idb == "ecoinvent":
-            acts = db_ecoinvent.search(
-                iprocess,  # process name
-                filter={
-                    "location": iloc,
-                },
-            )
-
+        # ensure exact match of c_name and c_product, since search above does only partial matches (sub-strings)
         acts = [
             iact
             for iact in acts
@@ -111,7 +73,7 @@ def get_functional_units(
 
         assert (
             len(acts) == 1
-        ), f"found {len(acts)} activities for bw2_activity {iproduct, iprocess, iloc, idb} instead of 1 bw2_activity. \n The activities found are: \n {acts}"
+        ), f"found {len(acts)} activities for bw2_activity {iproduct, iprocess, iloc, idb_name} instead of 1 bw2_activity. \n The activities found are: \n {acts}"
 
         acts = acts[0]
 
