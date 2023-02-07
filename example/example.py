@@ -36,13 +36,13 @@ fp_export_lca_results = pt.Path("./example/exports")
 
 bw.projects.set_current(project_name)
 
-bwss.relink_database_to_new_background(
-    db_original_name,
-    db_name_relinked,
-    db_name_old_bg,
-    db_name_new_bg,
-    create_new_db_relinked=create_new_db_relinked,
-)
+# bwss.relink_database_to_new_background(
+#     db_original_name,
+#     db_name_relinked,
+#     db_name_old_bg,
+#     db_name_new_bg,
+#     create_new_db_relinked=create_new_db_relinked,
+# )  # relinking the DB is optional
 
 
 bwss.create_calculation_setup(

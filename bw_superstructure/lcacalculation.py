@@ -81,7 +81,7 @@ def export_lca_scores(mlca, fp_lca_results):
         write_lcaresults_to_excel(fp_lca_results, ifile_name, df_calc_setup, df_impacts)
 
     print(
-        f"Export of LCA results into {idx_fu+1} excel files done to: {fp_lca_results}",
+        f"Exported LCA results into {idx_fu+1} excel files to: {fp_lca_results}",
     )
 
 

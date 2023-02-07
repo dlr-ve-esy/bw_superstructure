@@ -79,7 +79,7 @@ def get_functional_units(
 
         functional_units.append(acts)
 
-    print(f"selected functional units:{functional_units}")
+    # print(f"selected functional units:{functional_units}")
 
     return functional_units
 
@@ -142,7 +142,7 @@ def get_bw2_lcia_method(
     ), f"myMethod does not have correct length. We found {len(lcia_method)} methods instead of 1"
 
     lcia_method = lcia_method[0]
-    print(f"selected LCIA method: {lcia_method}")
+    # print(f"selected LCIA method: {lcia_method}")
 
     return lcia_method
 
@@ -178,5 +178,5 @@ def create_calculation_setup(
     # note that calculation_setup is just a dict, therefore overwrites if same name is chosen
 
     print(
-        f"calculation setup created: \n name: {calc_setup_name} \n {len(functional_units)} functional units: \n {[ifu for ifu in functional_units]} \n {len(lcia_methods)} LCIA Methods: \n {[imeth.internal_name for imeth in lcia_methods.values()]}"
+        f"created calculation setup: {calc_setup_name} \n {len(functional_units)} functional units: \n {[ifu for ifu in functional_units]} \n {len(lcia_methods)} LCIA Methods: \n {[imeth.internal_name for imeth in lcia_methods.values()]}"
     )
