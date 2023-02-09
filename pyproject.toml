@@ -23,7 +23,17 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = []
+dependencies = ["brightway2=2.4",
+  "bw2analyzer=0.10 ",
+  "bw2calc=1.8.1",
+  "bw2data=3.6.5",
+  "bw2io=0.8.6",
+  "bw2parameters=0.7",
+  "bw_migrations=0.1",
+  "pyarrow=11.0",
+  "ruamel.yaml=0.17",
+  "hatch=1.6",
+]
 dynamic = ["version"]
 
 [project.urls]
