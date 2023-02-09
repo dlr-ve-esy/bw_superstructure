@@ -46,4 +46,4 @@ pip install bw-superstructure
 
 ## License
 
-`bw-superstructure` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
+`bw-superstructure` is distributed under the terms of the [LGPL-3.0](https://spdx.org/licenses/LGPL-3.0) license.

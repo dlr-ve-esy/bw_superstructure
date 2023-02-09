@@ -7,7 +7,7 @@ name = "bw-superstructure"
 description = ''
 readme = "README.md"
 requires-python = ">=3.7"
-license = "MIT"
+license = "LGPL-3.0"
 keywords = []
 authors = [
   { name = "Harpprecht", email = "Carina.Harpprecht@dlr.de" },
