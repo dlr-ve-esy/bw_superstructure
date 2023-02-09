@@ -12,6 +12,7 @@
 
 ## Installation
 
+currently, no pip-package is provided. In the future pip package is planned and will be installable via:
 ```console
 pip install bw-superstructure
 ```
