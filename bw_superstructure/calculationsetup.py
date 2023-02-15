@@ -30,7 +30,8 @@ def get_functional_units(
     functional_units = []
 
     fu_input = pd.read_excel(fp_functional_units, header=0)
-    fu_input = fu_input.fillna("")
+    fu_input.dropna(axis="index", how="all", inplace=True)
+    # fu_input = fu_input.fillna("")
 
     selected_dbs = list(fu_input["database"].unique())
     print("DBs of functional units:", selected_dbs)
@@ -60,9 +61,15 @@ def get_functional_units(
         acts = bw.Database(idb_name).search(
             iprocess,  # process name
             filter={
-                "location": iloc,
+                "location": iloc,  # FIXME: location raus und nachlagern
             },
         )  # requires at least 1 string, cannot combine the str + keyword in filter
+
+        ################ FIXME: delete later
+        assert (
+            len(acts) >= 1
+        ), f"TEST FAIL: found {len(acts)} activities for bw2_activity {iproduct, iprocess, iloc, idb_name}"
+        ################
 
         # ensure exact match of c_name and c_product, since search above does only partial matches (sub-strings)
         acts = [

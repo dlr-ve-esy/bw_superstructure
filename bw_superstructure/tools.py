@@ -1,5 +1,6 @@
 ﻿import pandas as pd
 import brightway2 as bw
+import datetime
 
 from bw_superstructure.bwutils.strategies import relink_exchanges_existing_db
 from .superstructure.utils import SUPERSTRUCTURE
@@ -65,3 +66,15 @@ def remove_cols_from_sdf(
         print("export processed SDF file to: {excel_fp}")
 
     return sdf
+
+
+def time_stamp(fmt="%Y-%m-%d_%H-%M"):
+    """creates a time stamp of now, e.g. "2023-02-15_13-37"
+
+    Args:
+        fmt (str, optional): format. Defaults to "%Y-%m-%d_%H-%M".
+
+    Returns:
+        str: time stamp, e.g. 2023-02-15_13-37
+    """
+    return datetime.datetime.now().strftime(fmt)
