@@ -51,32 +51,28 @@ def get_functional_units(
 
         idb_name = irow["database"]
         iproduct = irow["product"]
-        iprocess = (
-            "operation only - " + irow["process"]
-            if idb_name == "fritsb_relinked"
-            else irow["process"]
-        )
+        iprocess = irow["process"]
         iloc = irow["location"]
 
         acts = bw.Database(idb_name).search(
-            iprocess,  # process name
-            filter={
-                "location": iloc,  # FIXME: location raus und nachlagern
-            },
-        )  # requires at least 1 string, cannot combine the str + keyword in filter
+            iprocess,
+        )  # Note: the filter of the .search() function is a bit buggy for locations and products, therefore we do not use it here.
+        # search only does partial matches (searches for sub-strings)
 
-        ################ FIXME: delete later
         assert (
             len(acts) >= 1
-        ), f"TEST FAIL: found {len(acts)} activities for bw2_activity {iproduct, iprocess, iloc, idb_name}"
-        ################
+        ), f"Could not find any activity for {iproduct, iprocess, iloc,} in {idb_name}"
 
-        # ensure exact match of c_name and c_product, since search above does only partial matches (sub-strings)
+        # filter for correct location and reference product
         acts = [
             iact
             for iact in acts
-            if (iact["name"] == iprocess and iact["reference product"] == iproduct)
-        ]  # note: check with process name is also needed, since search does not compare strings whether they are equal, but whether they are contained
+            if (
+                iact["location"] == iloc
+                and iact["reference product"] == iproduct
+                and iact["name"] == iprocess
+            )
+        ]  # ensure exact match of process name (search above does only partial matches (sub-strings))
 
         assert (
             len(acts) == 1
@@ -85,8 +81,6 @@ def get_functional_units(
         acts = acts[0]
 
         functional_units.append(acts)
-
-    # print(f"selected functional units:{functional_units}")
 
     return functional_units
 
