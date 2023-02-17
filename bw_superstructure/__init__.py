@@ -11,9 +11,11 @@ from bw_superstructure.calculationsetup import (
 from bw_superstructure.lcacalculation import (
     calculate_scenario_LCA,
 )
+from bw_superstructure.export import (export_lca_scores)
 
 __all__ = [
     "relink_database_to_new_background",
     "create_calculation_setup",
     "calculate_scenario_LCA",
+    "export_lca_scores",
 ]

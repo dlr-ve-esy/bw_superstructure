@@ -103,9 +103,7 @@ def get_lcia_methods(fp: pt.Path) -> Dict[str, MethodTuple]:
             imeth[2],  # official BW2-string
             imeth[3],  # own name, free to choose
             imeth[4],  # own abbreviation, free to choose
-            get_bw2_lcia_method(
-                imeth[0], imeth[1], imeth[2]
-            ),  # real bw2-object  # TODO refactor function to get_bw2_method()
+            get_bw2_lcia_method(imeth[0], imeth[1], imeth[2]),  # real bw2-object
         )
 
     print(
@@ -180,5 +178,5 @@ def create_calculation_setup(
     # note that calculation_setup is just a dict, therefore overwrites if same name is chosen
 
     print(
-        f"created calculation setup: {calc_setup_name} \n {len(functional_units)} functional units: \n {[ifu for ifu in functional_units]} \n {len(lcia_methods)} LCIA Methods: \n {[imeth.internal_name for imeth in lcia_methods.values()]}"
-    )
+        f"\n Created calculation setup: {calc_setup_name} \n {len(functional_units)} functional units: \n {[ifu for ifu in functional_units]} \n {len(lcia_methods)} LCIA Methods: \n {[imeth.internal_name for imeth in lcia_methods.values()]}"
+    )  # TODO improve print of FUs

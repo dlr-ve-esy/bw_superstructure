@@ -7,6 +7,7 @@ from bw_superstructure.export import (
     create_export_folder,
 )
 from bw_superstructure.tools import remove_cols_from_sdf
+from bw_superstructure.export import check_export_folder_path
 from bw_superstructure.superstructure.manager import (
     format_dataframe,
 )
@@ -30,6 +31,8 @@ def get_scenario_difference_dataframe(
         export_to_excel=False,
     )
 
+    print(f"Imported scenario difference file from: {path_to_SDF}")
+
     return scenario_diff_df
 
 
@@ -46,6 +49,7 @@ def calculate_lca_results(
     ] = "scenario"  # AB also uses "simple" here for non-scenario LCA, see in do_LCA_calculations()
     data["data"] = scenario_diff_df
 
+    print(f"Calculating LCA results for calculation setup: {calc_setup_name} .....")
     mlca, contributions, mc = do_LCA_calculations(data)
 
     return mlca, contributions, mc
@@ -58,11 +62,11 @@ def calculate_scenario_LCA(
     export_results_to_excel=True,
     fp_export_lca_results: Optional[pt.Path] = None,  #: pt.Path,
 ):
-    
+
     if export_results_to_excel:
-        fp_export_lca_results = create_export_folder(
+        fp_export_lca_results = check_export_folder_path(
             fp_export_folder=fp_export_lca_results
-        )  # we check early whether the export folder is already existing to reduce waiting time for the user 
+        )  # we check early whether the export folder is already existing to reduce waiting time for the user
 
     scenario_diff_file = get_scenario_difference_dataframe(
         path_to_SDF, sheet_idx=sdf_sheet_idx

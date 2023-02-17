@@ -12,22 +12,21 @@ from bw_superstructure.superstructure.mlca import (
 from bw_superstructure.tools import time_stamp
 
 
-def create_export_folder(fp_export_folder: Optional[pt.Path] = None) -> pt.Path:
-    """Creates a folder for exporting the excel files containing LCA scores for each functional unit.
+def check_export_folder_path(fp_export_folder: Optional[pt.Path] = None) -> pt.Path:
+    """Checks whether a folder already exists for the given filepath or creates a new default filepath for exporting LCA scores.
+
     By default (fp_export_folder=None, i.e. no user-specific path is specified), the folder name is the time it gets created.
-
     For fp_export_folder, the user can either provide a specific pt.Path or a string which will be converted into a pt.Path.
-
-    If the folder exists already, an Error is raised. If it doesn't, a new folder will be created.
+    If the folder exists already, an Error is raised. If it doesn't, a filepath is returned.
 
     Args:
-        fp_export_folder (pt.Path or str, optional): Filepath to folder to which LCA results should be exported to (excel files). Defaults to None.
+        fp_export_folder (pt.Path or str, optional): Filepath to folder to which LCA results should be exported to (excel files). Default is None.
 
     Returns:
-        pt.Path:
+        fp_export_folder (pt.Path): Filepath to folder to which LCA results should be exported to (excel files).
     """
 
-    if not fp_export_folder:  # default folder
+    if not fp_export_folder:  # default folder if None
         timenow = time_stamp()
 
         # create directories if they don't yet exist:
@@ -43,9 +42,29 @@ def create_export_folder(fp_export_folder: Optional[pt.Path] = None) -> pt.Path:
             f"Folder {fp_export_folder.absolute()} is already there. We do not override the folder. Please delete the existing one or specify another folder"
         )
 
+    return fp_export_folder
+
+
+def create_export_folder(fp_export_folder: Optional[pt.Path] = None) -> pt.Path:
+    """Creates a folder for exporting the excel files containing LCA scores for each functional unit.
+    By default (fp_export_folder=None, i.e. no user-specific path is specified), the folder name is the time it gets created.
+
+    For fp_export_folder, the user can either provide a specific pt.Path or a string which will be converted into a pt.Path.
+
+    If the folder exists already, an Error is raised. If it doesn't, a new folder will be created.
+
+    Args:
+        fp_export_folder (pt.Path or str, optional): Filepath to folder to which LCA results should be exported to (excel files). Defaults to None.
+
+    Returns:
+        fp_export_folder (pt.Path): Filepath to folder to which LCA results should be exported to (excel files).
+    """
+
+    fp_export_folder = check_export_folder_path(fp_export_folder)
+
     fp_export_folder.mkdir(parents=True, exist_ok=False)
 
-    print(f"Created folder: {fp_export_folder}")
+    print(f"Created export folder: {fp_export_folder.absolute()}")
 
     return fp_export_folder
 
@@ -161,7 +180,9 @@ def write_lcaresults_to_excel(
     iwriter.save()
 
 
-def export_lca_scores(mlca, fp_export_lca_results=None):
+def export_lca_scores(mlca, fp_export_lca_results: Optional[pt.Path] = None):
+
+    fp_export_lca_results = create_export_folder(fp_export_lca_results)
 
     scenarios = [iscen for iscen in mlca.scenario_names]
     impact_categories = [", ".join(bw.Method(imeth).name) for imeth in mlca.methods]

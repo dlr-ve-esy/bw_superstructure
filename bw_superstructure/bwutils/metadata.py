@@ -71,11 +71,11 @@ class MetaDataStore(object):
 
         dfs = list()
         dfs.append(self.dataframe)
-        print(
-            "Current shape and databases in the MetaDataStore:",
-            self.dataframe.shape,
-            self.databases,
-        )
+        # print(
+        #     "Current shape and databases in the MetaDataStore:",
+        #     self.dataframe.shape,
+        #     self.databases,
+        # )
         for db_name in new:
             if db_name not in bw.databases:
                 raise ValueError("This database does not exist:", db_name)

@@ -35,7 +35,7 @@ def wrap_text(string: str, max_length: int = 80) -> str:
         return line
         # return textwrap.fill(
         #     line, width=max_length, break_long_words=True, replace_whitespace=False
-        # )  # TODO: delete this function later in the other functions, since not needed for us probably (just GUI stuff)
+        # )  # TODO: delete this function later in the other functions, since not needed for us probably (just for GUI)
 
     return "\n".join(map(fold, string.splitlines()))
 
