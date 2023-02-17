@@ -1,9 +1,9 @@
 ﻿import pandas as pd
-import brightway2 as bw
 import datetime
+import brightway2 as bw
 
 from bw_superstructure.bwutils.strategies import relink_exchanges_existing_db
-from .superstructure.utils import SUPERSTRUCTURE
+from bw_superstructure.superstructure.utils import SUPERSTRUCTURE
 
 
 def relink_database_to_new_background(

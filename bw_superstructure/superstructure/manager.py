@@ -1,10 +1,10 @@
 ﻿import pandas as pd
 import brightway2 as bw
-from bw_superstructure.superstructure.utils import SUPERSTRUCTURE
+
+from bw_superstructure.superstructure.utils import (SUPERSTRUCTURE, guess_flow_type)
 from bw_superstructure.superstructure.activities import (
     fill_df_keys_with_fields,
 )
-from bw_superstructure.superstructure.utils import guess_flow_type
 
 # Note: source: based on: activity-browser: methods from class SuperstructureManager(object)
 # (Lib\site-packages\activity_browser\bwutils\superstructure\manager.py)

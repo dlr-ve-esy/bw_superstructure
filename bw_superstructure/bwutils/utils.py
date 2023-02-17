@@ -3,8 +3,8 @@
 from typing import NamedTuple, Optional
 
 from bw2data import config
-from bw2data.backends.peewee import ActivityDataset, ExchangeDataset
 from bw2data.utils import TYPE_DICTIONARY
+from bw2data.backends.peewee import ActivityDataset, ExchangeDataset
 
 
 class Key(NamedTuple):

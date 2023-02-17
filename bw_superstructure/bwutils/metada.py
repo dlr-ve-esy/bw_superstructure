@@ -1,10 +1,11 @@
 ﻿# Note: source: activity-browser: from: Lib\site-packages\activity_browser\bwutils\metadata.py
 
+import pandas as pd
+import numpy as np
+
 import brightway2 as bw
 from bw2data.errors import UnknownObject
 from bw2data.backends.peewee import ActivityDataset
-import pandas as pd
-import numpy as np
 
 from bw_superstructure.bwutils.commontasks import count_database_records
 

@@ -1,11 +1,11 @@
 ﻿# Note: source: activity-browser: functions from: Lib\site-packages\activity_browser\bwutils\superstructure\excel.py
 
+import openpyxl
+import pandas as pd
+
 from ast import literal_eval
 from pathlib import Path
 from typing import Union
-
-import openpyxl
-import pandas as pd
 
 from bw_superstructure.superstructure.utils import SUPERSTRUCTURE
 

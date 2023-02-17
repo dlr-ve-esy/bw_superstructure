@@ -1,7 +1,6 @@
 ﻿# Note: source: activity-browser: functions from: Lib\site-packages\activity_browser\bwutils\strategies.py
 
 import brightway2 as bw
-
 from bw2io import activity_hash
 from bw2io.utils import DEFAULT_FIELDS
 from bw2io.errors import StrategyError

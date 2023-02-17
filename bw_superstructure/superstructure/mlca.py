@@ -1,19 +1,14 @@
 ﻿# Note: source: activity-browser, objects from: Lib\site-packages\activity_browser\bwutils\superstructure\mlca.py
 
-
 import pandas as pd
 import numpy as np
-
-# -*- coding: utf-8 -*-
 from typing import Iterable, Optional, List, Tuple, Union
 
 from bw2calc.matrices import TechnosphereBiosphereMatrixBuilder as MB
 
 from bw_superstructure.bwutils.utils import Index
-
 from bw_superstructure.bwutils.multilca import MLCA, Contributions
 from bw_superstructure.bwutils.commontasks import format_activity_label
-
 from bw_superstructure.superstructure.dataframe import (
     scenario_names_from_df,
     arrays_from_indexed_superstructure,
@@ -162,7 +157,7 @@ class SuperstructureMLCA(MLCA):
                 idx["col"],
             ] = sample
 
-    def _perform_calculations(self):  
+    def _perform_calculations(self):
         """Near copy of `MLCA` class, but includes a loop for all scenarios."""
         for ps_col in range(self.total):
             self.next_scenario()

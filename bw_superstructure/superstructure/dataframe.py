@@ -1,10 +1,11 @@
 ﻿# Note: source: functions from AB in dataframe.py: Lib\site-packages\activity_browser\bwutils\superstructure\dataframe.py
 
+import numpy as np
+import pandas as pd
+
 from typing import List, Tuple
 
 import brightway2 as bw
-import numpy as np
-import pandas as pd
 
 from bw_superstructure.bwutils.utils import Index
 from bw_superstructure.superstructure.utils import SUPERSTRUCTURE

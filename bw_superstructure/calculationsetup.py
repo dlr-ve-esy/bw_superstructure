@@ -1,10 +1,11 @@
-﻿from collections import namedtuple
+﻿import pandas as pd
 import pathlib as pt
-from ruamel.yaml import YAML
-from typing import Dict
-import brightway2 as bw
 
-import pandas as pd
+from typing import Dict
+from collections import namedtuple
+from ruamel.yaml import YAML
+
+import brightway2 as bw
 
 
 pd.set_option("display.max_columns", None)

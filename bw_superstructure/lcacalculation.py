@@ -1,23 +1,22 @@
-﻿from typing import Optional
-import pandas as pd
+﻿import pandas as pd
 import pathlib as pt
-import brightway2 as bw
+from typing import Optional
 
-from .superstructure.manager import (
+from bw_superstructure.export import (
+    export_lca_scores,
+)
+from bw_superstructure.tools import remove_cols_from_sdf
+from bw_superstructure.superstructure.manager import (
     format_dataframe,
 )
-
-from .bwutils.calculations import do_LCA_calculations
-from .superstructure.excel import import_from_excel
-from .superstructure.mlca import (
+from bw_superstructure.superstructure.excel import import_from_excel
+from bw_superstructure.superstructure.mlca import (
     SuperstructureMLCA,
     SuperstructureContributions,
 )
+from bw_superstructure.bwutils.calculations import do_LCA_calculations
 
-from .export import (
-    export_lca_scores,
-)
-from .tools import remove_cols_from_sdf
+
 
 
 def get_scenario_difference_dataframe(

@@ -1,8 +1,7 @@
 ﻿# Note: source: activity-browser: functions from: Lib\site-packages\activity_browser\bwutils\superstructure\utils.py
 
-
-import brightway2 as bw
 import pandas as pd
+import brightway2 as bw
 
 
 # Different kinds of indexes, to allow for quick selection of data from

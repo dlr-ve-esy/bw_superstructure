@@ -1,15 +1,15 @@
 ﻿# Note: source: activity-browser: functions from: Lib\site-packages\activity_browser\bwutils\multilca.py
 
-from typing import Optional, Union, Iterable
-import brightway2 as bw
-
 import pandas as pd
 import numpy as np
-from bw_superstructure.bwutils.commontasks import wrap_text
+from typing import Optional, Union, Iterable
 
+import brightway2 as bw
+from bw2analyzer import ContributionAnalysis
+
+from bw_superstructure.bwutils.commontasks import wrap_text
 from bw_superstructure.bwutils.metada import AB_metadata
 
-from bw2analyzer import ContributionAnalysis
 
 ca = ContributionAnalysis()
 

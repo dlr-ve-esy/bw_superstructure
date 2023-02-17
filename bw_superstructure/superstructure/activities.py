@@ -1,9 +1,10 @@
 ﻿# Note: source: functions from AB in activities.py: Lib\site-packages\activity_browser\bwutils\superstructure\activities.py
 
-import brightway2 as bw
-from bw2data.backends.peewee import ActivityDataset
 import numpy as np
 import pandas as pd
+
+import brightway2 as bw
+from bw2data.backends.peewee import ActivityDataset
 
 
 FROM_ACT = pd.Index(

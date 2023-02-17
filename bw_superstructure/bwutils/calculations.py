@@ -1,6 +1,5 @@
 ﻿# Note: source: activity-browser: function from: Lib\site-packages\activity_browser\bwutils\calculations.py
 
-
 from bw2calc.errors import BW2CalcError
 
 from bw_superstructure.bwutils.multilca import MLCA, Contributions

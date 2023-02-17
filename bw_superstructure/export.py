@@ -1,14 +1,14 @@
 ﻿import pandas as pd
 import datetime
+import pathlib as pt
 from collections import defaultdict
 from typing import Optional
-import pathlib as pt
+
 import brightway2 as bw
 
-from .superstructure.mlca import (
+from bw_superstructure.superstructure.mlca import (
     SuperstructureMLCA,
 )
-
 from bw_superstructure.tools import time_stamp
 
 
