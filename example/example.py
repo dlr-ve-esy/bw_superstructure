@@ -16,7 +16,7 @@ db_name_old_bg = (
 )
 db_name_new_bg = "SS_ei38_remind_Base_RCP19_SETAC2022"  # name of the new BG-DB which the original DB will be relinked to
 
-create_new_db_relinked = True  # if True, an already existing DB with the name of db_name_relinked will be deleted, and a new db_name_relinked will be created. if False, the already existing DB of the name db_name_relinked will be used
+create_new_db_relinked = False  # if True, an already existing DB with the name of db_name_relinked will be deleted, and a new db_name_relinked will be created. if False, the already existing DB of the name db_name_relinked will be used
 
 calc_setup_name = "bw_ss_test"  # name of the calculation setup
 
@@ -33,7 +33,9 @@ path_to_SDF = pt.Path(
 
 # export of LCA results
 export_results_to_excel = True  # True: scenario LCA scores will be exported to exports or the filepath given in fp_export_lca_results
-fp_export_lca_results = None
+fp_export_lca_results = (
+    None  # if None, a default is used using a time-stamp in the name
+)
 # fp_export_lca_results = pt.Path(
 #     "./example/exports/my_example_case"
 # )  # optional; if not provided, the default is the exports folder

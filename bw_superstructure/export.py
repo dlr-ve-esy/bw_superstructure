@@ -32,7 +32,7 @@ def create_export_folder(fp_export_folder: Optional[pt.Path] = None) -> pt.Path:
 
         # create directories if they don't yet exist:
         working_dir = pt.Path(".")
-        print(working_dir.absolute())
+        # print(working_dir.absolute())
         fp_export_folder = working_dir / "exports" / timenow
 
     else:  # user-specific folder path
@@ -40,7 +40,7 @@ def create_export_folder(fp_export_folder: Optional[pt.Path] = None) -> pt.Path:
 
     if fp_export_folder.exists():
         raise IOError(
-            f"Folder {fp_export_folder} is already there. We do not override the folder. Please delete the existing one or specify another folder"
+            f"Folder {fp_export_folder.absolute()} is already there. We do not override the folder. Please delete the existing one or specify another folder"
         )
 
     fp_export_folder.mkdir(parents=True, exist_ok=False)
@@ -167,8 +167,6 @@ def export_lca_scores(mlca, fp_export_lca_results=None):
     impact_categories = [", ".join(bw.Method(imeth).name) for imeth in mlca.methods]
     impact_cat_units = [bw.Method(imeth).metadata["unit"] for imeth in mlca.methods]
 
-    fp_export_lca_results = create_export_folder(fp_export_folder=fp_export_lca_results)
-
     fu_name_counts = defaultdict(lambda: 0)
     # initialize with 0, und nachher +1
 
@@ -204,5 +202,5 @@ def export_lca_scores(mlca, fp_export_lca_results=None):
         )
 
     print(
-        f"Exported LCA results into {idx_fu+1} excel files to: {fp_export_lca_results}",
+        f"Exported LCA results into {idx_fu+1} excel files to: {fp_export_lca_results.absolute()}",
     )

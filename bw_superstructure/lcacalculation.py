@@ -4,6 +4,7 @@ from typing import Optional
 
 from bw_superstructure.export import (
     export_lca_scores,
+    create_export_folder,
 )
 from bw_superstructure.tools import remove_cols_from_sdf
 from bw_superstructure.superstructure.manager import (
@@ -15,8 +16,6 @@ from bw_superstructure.superstructure.mlca import (
     SuperstructureContributions,
 )
 from bw_superstructure.bwutils.calculations import do_LCA_calculations
-
-
 
 
 def get_scenario_difference_dataframe(
@@ -59,6 +58,11 @@ def calculate_scenario_LCA(
     export_results_to_excel=True,
     fp_export_lca_results: Optional[pt.Path] = None,  #: pt.Path,
 ):
+    
+    if export_results_to_excel:
+        fp_export_lca_results = create_export_folder(
+            fp_export_folder=fp_export_lca_results
+        )  # we check early whether the export folder is already existing to reduce waiting time for the user 
 
     scenario_diff_file = get_scenario_difference_dataframe(
         path_to_SDF, sheet_idx=sdf_sheet_idx
