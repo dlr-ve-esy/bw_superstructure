@@ -8,7 +8,7 @@ import brightway2 as bw
 from bw2analyzer import ContributionAnalysis
 
 from bw_superstructure.bwutils.commontasks import wrap_text
-from bw_superstructure.bwutils.metada import AB_metadata
+from bw_superstructure.bwutils.metadata import AB_metadata
 
 
 ca = ContributionAnalysis()
