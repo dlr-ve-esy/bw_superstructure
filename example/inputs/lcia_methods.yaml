@@ -6,8 +6,8 @@
   - "CC" # own name, free to choose
 
 resources:
-  - "EF v3.0"  # official BW2-string 
-  - "material resources: metals/minerals"  # official BW2-string
-  - "abiotic depletion potential (ADP): elements (ultimate reserves)"  # official BW2-string
+  - "EF v3.0" # official BW2-string
+  - "material resources: metals/minerals" # official BW2-string
+  - "abiotic depletion potential (ADP): elements (ultimate reserves)" # official BW2-string
   - "resources"
   - "ADP"
