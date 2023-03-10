@@ -4,6 +4,7 @@
 
 from bw_superstructure.tools import (
     relink_database_to_new_background,
+    import_database,
 )
 from bw_superstructure.calculationsetup import (
     create_calculation_setup,
@@ -18,4 +19,5 @@ __all__ = [
     "create_calculation_setup",
     "calculate_scenario_LCA",
     "export_lca_scores",
+    "import_database",
 ]

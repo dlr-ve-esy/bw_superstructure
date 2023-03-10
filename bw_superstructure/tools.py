@@ -1,9 +1,85 @@
 ﻿import pandas as pd
 import datetime
+import pathlib as pt
+from openpyxl import load_workbook
+from typing import Optional
+
 import brightway2 as bw
 
 from bw_superstructure.bwutils.strategies import relink_exchanges_existing_db
 from bw_superstructure.superstructure.utils import SUPERSTRUCTURE
+
+
+def get_dbname_from_excel(path_to_excel):
+    wb = load_workbook(path_to_excel)
+    ws = wb.active
+    for idx, icell in enumerate(ws["A"], 1):
+        if icell.value.lower().strip() == "database":
+            return ws.cell(row=idx, column=2).value
+    raise IOError("no database name specified in column A&B of sheet {ws.name}")
+
+
+def import_database(database_name, file_type, path_to_db):
+
+    allowed_filetypes = ["ecospold", "excel"]
+    assert (
+        file_type in allowed_filetypes
+    ), f'The file type "{file_type}" is not supported for importing a new database. Allowed file types are: "{allowed_filetypes}"'
+
+    if file_type == "ecospold":
+        print(f'Database "{database_name}" not yet in project, it will be imported.')
+        db = bw.SingleOutputEcospold2Importer(path_to_db, database_name, use_mp=False)
+    elif file_type == "excel":
+        print(
+            f'Excel-based database "{database_name}" not  yet in project, it will be imported.'
+        )
+        db = bw.ExcelImporter(path_to_db)
+        dbname_in_excel = get_dbname_from_excel(path_to_db)
+        assert (
+            dbname_in_excel == database_name
+        ), f'The excel db name "{dbname_in_excel}" is inconsistent with the db name provided in the function: "{database_name}"'
+
+    db.apply_strategies()
+    db.statistics()
+
+    try:
+        db.write_database()
+    except Exception:
+        print(
+            f'Error while writing database: "{database_name}". Check whether some exchanges cannot be linked correctly as provided in "{path_to_db}". See excel file of unlinked exchanges:'
+        )
+        db.write_excel(only_unlinked=True)
+        print("Traceback:")  # provides exception from BW for db.write_database()
+
+
+def check_and_import_database(
+    db_name: str,
+    fp_import_db: Optional[pt.Path] = None,
+    filetype_import_db: Optional[str] = None,
+):
+    #################### BG-DB check / create if not exists
+    db_exists = db_name in bw.databases
+
+    if fp_import_db:  # fp is provided
+        if db_exists:
+            raise IOError(
+                f'New background database "{db_name}" exists already. Therefore, we do not force a reimport of the database into the project. Set "fp_import_new_bg_db" to "None" if you want to use the already existing DB. Otherwise, delete the existing DB manually to be able to reimport it.'
+            )
+
+        #  DB does not yet exist
+        import_database(
+            db_name,
+            file_type=filetype_import_db,
+            path_to_db=fp_import_db,
+        )
+
+    elif not db_exists:  # no fp is provided, and DB does not yet exist
+        raise IOError(
+            f'The selected new background database "{db_name}" is not existing in your project. Therefore, we cannot relink to it. '
+            f"Existing DBs are: \n {list(bw.databases)}. \n You can import the DB into the project by: \n     1. providing a filepath "
+            f'to an excel file of the DB for "fp_import_new_bg_db" in "{relink_database_to_new_background.__name__}()" \n     '
+            f'2. executing the function "import_database(database_name, file_type, path_to_db)" \n     3. importing it manually e.g. through the activity-browser'
+        )
 
 
 def relink_database_to_new_background(
@@ -12,35 +88,38 @@ def relink_database_to_new_background(
     db_name_old_bg: str,
     db_name_new_bg: str,
     create_new_db_relinked=True,
+    fp_import_new_bg_db: Optional[pt.Path] = None,
+    filetype_import_new_bg_db: Optional[str] = None,
 ):
+
+    check_and_import_database(
+        db_name=db_name_new_bg,
+        fp_import_db=fp_import_new_bg_db,
+        filetype_import_db=filetype_import_new_bg_db,
+    )
+
+    if not create_new_db_relinked:
+        assert (
+            db_name_relinked in bw.databases
+        ), f"{db_name_relinked} not in databases: {bw.databases}"
+        print(f"using existing DB: {db_name_relinked}")
 
     if create_new_db_relinked:
         # copy original DB, new name
         if db_name_relinked in bw.databases:
             del bw.databases[db_name_relinked]
-            print(f"deleted {db_name_relinked}")
+            print(f"deleted database: {db_name_relinked}")
 
-        db_relinked_bwobject = bw.Database(db_name).copy(db_name_relinked)
-
-        assert (
-            db_name_relinked in bw.databases
-        ), f"{db_name_relinked} not in databases: {bw.databases}"
-
+        bw.Database(db_name).copy(db_name_relinked)
         print(f"created new DB to be relinked: {db_name_relinked}")
 
-        fg_db = bw.Database(
-            db_name_relinked
-        )  # foreground DB to relink from old background to new background DB
-        new_bg_db = bw.Database(
-            db_name_new_bg
-        )  # target background DB we want to relink to
-        relink_exchanges_existing_db(fg_db, db_name_old_bg, new_bg_db)
+    new_bg_db = bw.Database(db_name_new_bg)  # target background DB we want to relink to
 
-    else:
-        assert (
-            db_name_relinked in bw.databases
-        ), f"{db_name_relinked} not in databases: {bw.databases}"
-        print(f"using existing DB: {db_name_relinked}")
+    fg_db = bw.Database(
+        db_name_relinked
+    )  # foreground DB to relink from old background to new background DB
+
+    relink_exchanges_existing_db(fg_db, db_name_old_bg, new_bg_db)
 
 
 def remove_cols_from_sdf(

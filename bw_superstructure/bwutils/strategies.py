@@ -18,7 +18,7 @@ def relink_exchanges_existing_db(db: bw.Database, old: str, other: bw.Database) 
     # Note: source: based on: activity-browser:
     # function from: Lib\site-packages\activity_browser\bwutils\strategies.py
     # branch: activity-browser-dev; version: 2022.11.16
-    # modified by DLR: added 1 IOError and 1 assert statement
+    # modified by DLR: added 1 IOError and 1 if statement about altered
 
     # db = FG-db to be relinked
     # old = old-BG DB, eg ecoinvent
@@ -77,10 +77,13 @@ def relink_exchanges_existing_db(db: bw.Database, old: str, other: bw.Database) 
     # Process the database after the transaction is complete.
     #  this updates the 'depends' in metadata
 
-    # assert added by DLR
-    assert (
-        altered != 0
-    ), f'0 exchanges could be relinked from original background database "{old}" to new background database "{other.name}". If the new Database is a superstructure for scenario LCA calculation, your scenario LCA calculation will fail. No new DB was written, as no exchanges were changed'
+    # check of altered added by DLR
+    if altered == 0:
+        del bw.databases[db.name]  # we delete the db again, since it would be empty
+
+        raise IOError(
+            f'0 exchanges could be relinked from original background database "{old}" to new background database "{other.name}". If the new Database is a superstructure for scenario LCA calculation, your scenario LCA calculation will fail. No new DB was written, as no exchanges were changed'
+        )
 
     db.process()
     print(

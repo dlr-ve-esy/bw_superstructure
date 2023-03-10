@@ -16,12 +16,15 @@ db_original_name = (
 db_name_relinked = (
     "eco_export_SS"  # name if the original db was relinked and newly created
 )
+create_new_db_relinked = True  # if True, an already existing DB with the name of db_name_relinked will be deleted, and a new db_name_relinked will be created. if False, the already existing DB of the name db_name_relinked will be used
+
 db_name_old_bg = (
     "ecoinvent38_cutoff"  # name of the old (i.e. current)  BG-DB of the original DB
 )
-db_name_new_bg = "SS_ei38_remind_Base_RCP19_SETAC2022"  # name of the new BG-DB which the original DB will be relinked to
 
-create_new_db_relinked = True  # if True, an already existing DB with the name of db_name_relinked will be deleted, and a new db_name_relinked will be created. if False, the already existing DB of the name db_name_relinked will be used
+db_name_new_bg = "SS_ei38_remind_Base_RCP19_SETAC2022"  # name of the new BG-DB which the original DB will be relinked to
+fp_import_new_bg_db = None  # pt.Path("C:/Users/.../SS_ei38_remind_Base_RCP19_SETAC2022.xlsx")  # default=None # optional # if new BG-DB is not yet existing in project as a bw-DB, it can be imported from an excel or ecospold file. Provide a filepath to those files. Otherwise, set to None
+filetype_import_new_bg_db = None  # "excel" or "ecospold"; default=None # optional # file type of the file which the new BG-DB needs to be imported from
 
 calc_setup_name = "bw_ss_test"  # name of the calculation setup
 
@@ -58,6 +61,8 @@ bwss.relink_database_to_new_background(
     db_name_old_bg,
     db_name_new_bg,
     create_new_db_relinked=create_new_db_relinked,
+    fp_import_new_bg_db=fp_import_new_bg_db,  # None 
+    filetype_import_new_bg_db=filetype_import_new_bg_db,  # None
 )  # relinking the DB is optional,
 
 
@@ -75,6 +80,6 @@ mlca, contributions, mc = bwss.calculate_scenario_LCA(
 )  # calculates the LCA results for all functional units, LCIA methods and scenarios (as specified in the scenario difference file)
 
 # if desired, the user can export the LCA-results via a separate function:
-bwss.export_lca_scores(
-    mlca, fp_export_lca_results=pt.Path("./example/exports/test_at_CML")
-)
+# bwss.export_lca_scores(
+#     mlca, fp_export_lca_results=pt.Path("./example/exports/mytest")
+# )
