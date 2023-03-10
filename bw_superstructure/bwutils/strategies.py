@@ -1,6 +1,7 @@
 ﻿# Note: source: activity-browser: functions from: Lib\site-packages\activity_browser\bwutils\strategies.py
 
 import brightway2 as bw
+import warnings
 from bw2io import activity_hash
 from bw2io.utils import DEFAULT_FIELDS
 from bw2io.errors import StrategyError
@@ -18,7 +19,7 @@ def relink_exchanges_existing_db(db: bw.Database, old: str, other: bw.Database) 
     # Note: source: based on: activity-browser:
     # function from: Lib\site-packages\activity_browser\bwutils\strategies.py
     # branch: activity-browser-dev; version: 2022.11.16
-    # modified by DLR: added 1 IOError and 1 if statement about altered
+    # modified by DLR: added 1 IOError and 1 warning statement about altered
 
     # db = FG-db to be relinked
     # old = old-BG DB, eg ecoinvent
@@ -77,12 +78,14 @@ def relink_exchanges_existing_db(db: bw.Database, old: str, other: bw.Database) 
     # Process the database after the transaction is complete.
     #  this updates the 'depends' in metadata
 
-    # check of altered added by DLR
+    # warning added by DLR
     if altered == 0:
-        del bw.databases[db.name]  # we delete the db again, since it would be empty
+        # del bw.databases[db.name]  # we delete the db again, since it would be empty
 
-        raise IOError(
-            f'0 exchanges could be relinked from original background database "{old}" to new background database "{other.name}". If the new Database is a superstructure for scenario LCA calculation, your scenario LCA calculation will fail. No new DB was written, as no exchanges were changed'
+        warnings.warn(
+            f'\n \n --- WARNING --- : \n 0 exchanges could be relinked from original background database "{old}" to new background database "{other.name}".'
+            f"If the new Database is a superstructure for scenario LCA calculation, your scenario LCA calculation may fail."
+            f'Please, check your databases. The new database "{other.name}" might be empty. \n'
         )
 
     db.process()
