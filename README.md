@@ -31,6 +31,7 @@ pip install bw-superstructure
 
 
 ## features missing so far
+- specifying a value for the functional units (so far, the amount is set to 1 by default for each FU)
 - contribution analyses
 - monte carlo analysis
 - combining several scenario difference files
