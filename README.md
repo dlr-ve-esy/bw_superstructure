@@ -36,13 +36,13 @@ pip install bw-superstructure
 - monte carlo analysis
 - combining several scenario difference files
 
-## relation to the activity-browser
-- original objects and functions from the ab are in the sub-modules bwutils and superstructure
+## relation to the activity-browser (AB)
+- original objects and functions from the AB are in the sub-modules bwutils and superstructure
 - each file has the original filename as in the AB
 - in the header of the file, the relative path for that file within the ab is given
 - each function or objects states the source of the ab and whether it has been adapted or not. 
 - all of the objects are original, unless otherwise stated, apart from the functions in the superstructure.manager, which defines functions which originally where methods of the class SuperstructureManager of the ab
-- used ab version: branch: activity-browser-dev; version: 2022.11.16
+- used AB version: branch: activity-browser-dev; version: 2022.11.16
 - search for "Note: source" to see all objects from the activity-browser
 - search for "adaptations:" to see the adaptations. no adaptations are mentioned, no adaptations were done
 
