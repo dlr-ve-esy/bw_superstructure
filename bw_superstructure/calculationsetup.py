@@ -62,7 +62,8 @@ def get_functional_units(
 
         assert (
             len(acts) >= 1
-        ), f"Could not find any activity for {iproduct, iprocess, iloc,} in {idb_name}"
+        ), f"Could not find any activity for the given functional unit: product={iproduct}, process={iprocess}, loc={iloc} in database '{idb_name}'"
+        # FIXME: more detailed error messages are needed. See issue #160 in teh frits.b repository.
 
         # filter for correct location and reference product
         acts = [
