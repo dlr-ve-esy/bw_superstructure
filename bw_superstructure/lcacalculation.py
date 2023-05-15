@@ -1,6 +1,6 @@
 ﻿import pandas as pd
 import pathlib as pt
-from typing import Optional
+from typing import Optional, Tuple
 
 from bw_superstructure.export import (
     export_lca_scores,
@@ -38,7 +38,7 @@ def get_scenario_difference_dataframe(
 
 def calculate_lca_results(
     calc_setup_name: str, scenario_diff_df: pd.DataFrame
-) -> (SuperstructureMLCA, SuperstructureContributions, None):
+) -> Tuple[SuperstructureMLCA, SuperstructureContributions, None]:
 
     # imitating data-dict from AB
     data = {}
