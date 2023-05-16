@@ -26,13 +26,19 @@ MethodTuple = namedtuple(
 
 def get_functional_units(
     fp_functional_units: pt.Path,
+    additional_functional_units: list[tuple[str]] = None,
 ):
+
+    additional_functional_units = [] if additional_functional_units is None else additional_functional_units
+    additional_functional_units = pd.DataFrame(additional_functional_units, columns=['process', 'product', 'location', 'database'])
 
     functional_units = []
 
     fu_input = pd.read_excel(fp_functional_units, header=0)
     fu_input.dropna(axis="index", how="all", inplace=True)
     # fu_input = fu_input.fillna("")
+
+    fu_input = pd.merge(fu_input, additional_functional_units, how='outer', on=['process', 'product', 'location', 'database'])
 
     selected_dbs = list(fu_input["database"].unique())
     print("DBs of functional units:", selected_dbs)
@@ -152,6 +158,7 @@ def create_calculation_setup(
     calc_setup_name: str,
     fp_functional_units: pt.Path,
     fp_lcia_methods: pt.Path,
+    additional_functional_units: list[tuple[str]] = None,
 ):
     """creates a calculation setup using brightway2.
 
@@ -160,9 +167,16 @@ def create_calculation_setup(
         functional_units (List): List of bw2-activity objects.
         lcia_methods (dict): dict with key = str of from MethodTuple.internal_name, value = MethodTuple for that method
     """
+    
+    additional_functional_units = [] if additional_functional_units is None else additional_functional_units
+
+    if additional_functional_units:
+        assert len(additional_functional_units[0]) == 4, 'the provided additional functional units are not havint enough fields.\nPlease provide a list of tuples with each tuple containing in the given order the information: \nprocess, product, location and database.'
+
 
     functional_units = get_functional_units(
         fp_functional_units,
+        additional_functional_units=additional_functional_units,
     )
 
     lcia_methods = get_lcia_methods(fp_lcia_methods)
