@@ -25,20 +25,35 @@ MethodTuple = namedtuple(
 
 
 def get_functional_units(
-    fp_functional_units: pt.Path,
+    fp_functional_units: pt.Path = None,
     additional_functional_units: list[tuple[str]] = None,
-):
+) -> list:
+    """Gets the functional units which can be read in either via the fp_functional_units or via additional_functional_units, or from both arguments at the same time.
 
-    additional_functional_units = [] if additional_functional_units is None else additional_functional_units
-    additional_functional_units = pd.DataFrame(additional_functional_units, columns=['process', 'product', 'location', 'database'])
+    Args:
+        fp_functional_units (pt.Path, optional): filepath to an excel file containing the functional units with the headers ['product', 'process', 'location', 'database']. Defaults to None.
+        additional_functional_units (list[tuple[str]], optional): Lists additional functional units in the form of tuples. Each tuple contains the strings for product, process, location, database. Defaults to None.
+
+    Returns:
+        list: all functional units in the excel file from fp_functional_units or in the list of tuples for additional_functional_units
+    """
 
     functional_units = []
 
-    fu_input = pd.read_excel(fp_functional_units, header=0)
-    fu_input.dropna(axis="index", how="all", inplace=True)
-    # fu_input = fu_input.fillna("")
+    additional_functional_units = [] if additional_functional_units is None else additional_functional_units
+    additional_functional_units = pd.DataFrame(additional_functional_units, columns=['product', 'process', 'location', 'database'])
+
+    fu_input = []
+    
+    if fp_functional_units:
+        fu_input = pd.read_excel(fp_functional_units, header=0)
+        fu_input.dropna(axis="index", how="all", inplace=True)
+    else:
+        fu_input = pd.DataFrame(fu_input, columns=['product', 'process', 'location', 'database'])
 
     fu_input = pd.merge(fu_input, additional_functional_units, how='outer', on=['process', 'product', 'location', 'database'])
+    
+    assert len(fu_input) > 0, f"no functional units are read in. \n The filepath to functional units is: {fp_functional_units} \n The additional functional units are: {additional_functional_units}"
 
     selected_dbs = list(fu_input["database"].unique())
     print("DBs of functional units:", selected_dbs)
@@ -68,8 +83,8 @@ def get_functional_units(
 
         assert (
             len(acts) >= 1
-        ), f"Could not find any activity for the given functional unit: product={iproduct}, process={iprocess}, loc={iloc} in database '{idb_name}'"
-        # FIXME: more detailed error messages are needed. See issue #160 in teh frits.b repository.
+        ), f"Could not find any activity for the given functional unit: \n  product={iproduct}, \n  process={iprocess}, \n  loc={iloc} \n  in database '{idb_name}'"
+        # TODO: more detailed error messages are needed. See issue #160 in the frits.b repository.
 
         # filter for correct location and reference product
         acts = [
@@ -156,20 +171,19 @@ def get_bw2_lcia_method(
 
 def create_calculation_setup(
     calc_setup_name: str,
-    fp_functional_units: pt.Path,
     fp_lcia_methods: pt.Path,
+    fp_functional_units: pt.Path = None,
     additional_functional_units: list[tuple[str]] = None,
 ):
-    """creates a calculation setup using brightway2.
+    """creates a calculation setup using brightway2. Functional units can be read in either via the fp_functional_units or via additional_functional_units, or from both arguments at the same time.
 
     Args:
-        calc_setup_name (str): _description_
-        functional_units (List): List of bw2-activity objects.
-        lcia_methods (dict): dict with key = str of from MethodTuple.internal_name, value = MethodTuple for that method
+        calc_setup_name (str): name of the calculation setup.
+        lcia_methods (pt.Path): path to a yaml file providing lcia methods
+        fp_functional_units (pt.Path, optional): filepath to an excel file containing the functional units with the headers ['product', 'process', 'location', 'database']. Defaults to None.
+        additional_functional_units (list[tuple[str]], optional): Lists additional functional units in the form of tuples. Each tuple contains the strings for product, process, location, database. Defaults to None.    
     """
     
-    additional_functional_units = [] if additional_functional_units is None else additional_functional_units
-
     if additional_functional_units:
         assert len(additional_functional_units[0]) == 4, 'the provided additional functional units are not havint enough fields.\nPlease provide a list of tuples with each tuple containing in the given order the information: \nprocess, product, location and database.'
 
@@ -193,5 +207,5 @@ def create_calculation_setup(
     # note that calculation_setup is just a dict, therefore overwrites if same name is chosen
 
     print(
-        f"\n Created calculation setup: {calc_setup_name} \n {len(functional_units)} functional units: \n {[ifu for ifu in functional_units]} \n {len(lcia_methods)} LCIA Methods: \n {[imeth.internal_name for imeth in lcia_methods.values()]}"
+        f"\n Created calculation setup: {calc_setup_name} \n {len(functional_units)} functional units: \n {[ifu for ifu in functional_units]} \n \n {len(lcia_methods)} LCIA Methods: \n {[imeth.internal_name for imeth in lcia_methods.values()]}"
     )  # TODO improve print of FUs

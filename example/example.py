@@ -46,6 +46,9 @@ fp_export_lca_results = None  # if None, a default is created in the export fold
 #     "./example/exports/my_example_case"
 # )  # optional; if not provided, the default is the exports folder
 
+additional_functional_units = [("heat, future",	"wood pellets, burned in stirling heat and power co-generation unit, 3kW electrical, future", "CH",	"ecoinvent38_cutoff"),
+                               ("electricity, high voltage", "electricity production, nuclear, boiling water reactor_4BioG_OpO", "DE", "eco_export_SS")]
+
 
 ######### LCA calculation
 
@@ -61,15 +64,16 @@ bwss.relink_database_to_new_background(
     db_name_old_bg,
     db_name_new_bg,
     create_new_db_relinked=create_new_db_relinked,
-    fp_import_new_bg_db=fp_import_new_bg_db,  # None 
+    fp_import_new_bg_db=fp_import_new_bg_db,  # None
     filetype_import_new_bg_db=filetype_import_new_bg_db,  # None
 )  # relinking the DB is optional,
 
 
 bwss.create_calculation_setup(
     calc_setup_name,
-    fp_functional_units,
     fp_lcia_methods,
+    fp_functional_units=fp_functional_units,
+    additional_functional_units=additional_functional_units,
 )  # creates a calculation set-up with the functional units and the LCIA methods as specified in the respective input files
 
 mlca, contributions, mc = bwss.calculate_scenario_LCA(
