@@ -1,3 +1,9 @@
 dist
 *.pyc
 *.log
+
+exports
+explorations
+
+settings.json
+scenario_diff*
