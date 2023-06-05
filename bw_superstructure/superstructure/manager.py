@@ -1,10 +1,13 @@
 ﻿import pandas as pd
 import brightway2 as bw
+import itertools
+from typing import List
 
 from bw_superstructure.superstructure.utils import (SUPERSTRUCTURE, guess_flow_type)
 from bw_superstructure.superstructure.activities import (
     fill_df_keys_with_fields,
 )
+from bw_superstructure.superstructure.dataframe import scenario_columns
 
 # Note: source: based on: activity-browser: methods from class SuperstructureManager(object)
 # (Lib\site-packages\activity_browser\bwutils\superstructure\manager.py)
@@ -142,3 +145,80 @@ def build_index(df: pd.DataFrame) -> pd.MultiIndex:
     return pd.MultiIndex.from_tuples(
         df.loc[:, INDEX_KEYS].apply(tuple, axis=1), names=["input", "output", "flow"]
     )
+
+def combined_data(dfs, kind: str = "product", check_duplicates = None) -> pd.DataFrame:
+    """Combines multiple superstructures using a specific kind of logic.
+    Currently implemented: 'product' creates an outer-product combination
+    from all of the columns of the dataframes and injects values from all
+    the frames for their specific indexes, any shared indexes are overridden
+    where the later dataframes have preference.
+    Uses parts of https://stackoverflow.com/a/45286061
+    If only a single dataframe is given to the manager, return this dataframe instead.
+    """
+    frames: List[pd.DataFrame] = [format_dataframe(df) for df in dfs]
+    
+    if len(frames) <= 1:
+        df = next(iter(frames))
+        cols = scenario_columns(df)
+        return pd.DataFrame(
+            data=df.loc[:, cols], index=df.index, columns=cols
+        )
+    combo_idx = combine_indexes(frames)
+
+    if kind == "product":
+        combo_cols = combine_columns(frames)
+        df = product_combine_frames(
+            frames, combo_idx, combo_cols
+        )
+        # Flatten the columns again for later processing.
+        df.columns = df.columns.to_flat_index()
+    elif kind == "addition":
+        # Find the intersection subset of scenarios.
+        cols = combine_columns_intersect(frames)
+        df = addition_combine_frames(
+            frames, combo_idx, cols
+        )
+        if check_duplicates is not None:
+            df = check_duplicates(df)
+    else:
+        df = pd.DataFrame([], index=combo_idx)
+
+    return df
+
+def combine_columns(frames) -> pd.MultiIndex:
+    cols = [scenario_columns(df).to_list() for df in frames]
+    return pd.MultiIndex.from_tuples(list(itertools.product(*cols)))
+
+def combine_columns_intersect(frames) -> pd.Index:
+    iterable = iter(frames)
+    cols = scenario_columns(next(iterable))
+    for df in iterable:
+        cols = cols.intersection(scenario_columns(df))
+    return cols
+
+def combine_indexes(frames) -> pd.MultiIndex:
+    """Returns a union of all of the given dataframe indexes."""
+    iterable = iter(frames)
+    idx = next(iterable).index
+    for df in iterable:
+        idx = idx.union(df.index)
+    return idx
+
+def product_combine_frames(data: List[pd.DataFrame], index: pd.MultiIndex, cols: pd.MultiIndex) -> pd.DataFrame:
+    """Iterate through the dataframes, filling data into the combined
+    dataframe with duplicate indexes being resolved using a 'last one wins'
+    logic.
+    """
+    df = pd.DataFrame([], index=index, columns=cols)
+    for idx, f in enumerate(data):
+        data = f.loc[:, cols.get_level_values(idx)]
+        data.columns = cols
+        df.loc[data.index, :] = data
+    return df
+
+def addition_combine_frames(data: List[pd.DataFrame], index: pd.MultiIndex, cols: pd.Index) -> pd.DataFrame:
+    df = pd.DataFrame([], index=index, columns=cols)
+    for f in data:
+        data = f.loc[:, cols]
+        df.loc[data.index, :] = data
+    return df
