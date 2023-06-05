@@ -41,13 +41,12 @@ def calculate_lca_results(
 ) -> Tuple[SuperstructureMLCA, SuperstructureContributions, None]:
 
     # imitating data-dict from AB
-    data = {}
-
-    data["cs_name"] = calc_setup_name
-    data[
-        "calculation_type"
-    ] = "scenario"  # AB also uses "simple" here for non-scenario LCA, see in do_LCA_calculations()
-    data["data"] = scenario_diff_df
+    data = {
+            "cs_name": calc_setup_name,
+            "calculation_type": "scenario",
+            # AB also uses "simple" here for non-scenario LCA, see in do_LCA_calculations()
+            "data": scenario_diff_df
+            }
 
     print(f"Calculating LCA results for calculation setup: {calc_setup_name} .....")
     mlca, contributions, mc = do_LCA_calculations(data)
@@ -68,10 +67,10 @@ def calculate_scenario_LCA(
             fp_export_folder=fp_export_lca_results
         )  # we check early whether the export folder is already existing to reduce waiting time for the user
 
-    scenario_diff_file = get_scenario_difference_dataframe(
+    scenario_diff_df = get_scenario_difference_dataframe(
         path_to_SDF, sheet_idx=sdf_sheet_idx
     )
-    mlca, contributions, mc = calculate_lca_results(calc_setup_name, scenario_diff_file)
+    mlca, contributions, mc = calculate_lca_results(calc_setup_name, scenario_diff_df)
 
     if export_results_to_excel:
         export_lca_scores(mlca, fp_export_lca_results)
