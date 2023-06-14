@@ -17,6 +17,12 @@ currently, no pip-package is provided. In the future pip package is planned and 
 pip install bw-superstructure
 ```
 
+to install from git source use hatch:
+```console
+hatch build
+pip install --no-deps -I .\dist\bw_superstructure-0.0.1-py3-none-any.whl
+```
+
 ## Working features
 - relinking a DB to another DB
 - creating a user-defined calculation set-up for several functional units and impact categories 
