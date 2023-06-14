@@ -24,7 +24,7 @@ db_name_old_bg = (
 
 db_name_new_bg = "SS_ei38_remind_Base_RCP19_SETAC2022"  # name of the new BG-DB which the original DB will be relinked to
 fp_import_new_bg_db = None  # pt.Path("C:/Users/.../SS_ei38_remind_Base_RCP19_SETAC2022.xlsx")  # default=None # optional # if new BG-DB is not yet existing in project as a bw-DB, it can be imported from an excel or ecospold file. Provide a filepath to those files. Otherwise, set to None
-filetype_import_new_bg_db = None  # "excel" or "ecospold"; default=None # optional # file type of the file which the new BG-DB needs to be imported from
+filetype_import_new_bg_db = None  # excel, ecospold, or bw2package; default=None # optional # file type of the file which the new BG-DB needs to be imported from
 
 calc_setup_name = "bw_ss_test"  # name of the calculation setup
 

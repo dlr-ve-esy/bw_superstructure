@@ -19,13 +19,21 @@ def get_dbname_from_excel(path_to_excel):
     raise IOError("no database name specified in column A&B of sheet {ws.name}")
 
 
-def import_database(database_name, file_type, path_to_db):
+def import_database(database_name: str, file_type: str, path_to_db):
 
-    allowed_filetypes = ["ecospold", "excel"]
+    allowed_filetypes = ["ecospold", "excel", "bw2package"]
     assert (
         file_type in allowed_filetypes
     ), f'The file type "{file_type}" is not supported for importing a new database. Allowed file types are: "{allowed_filetypes}"'
 
+    if file_type == "bw2package":
+        print(f"Database {database_name} not yet in project, it will be imported.")
+        db = bw.BW2Package.import_file(path_to_db) 
+        # this writes already the DB. DB is silently overwritten, also if it is already existing
+        print(f"Database was written as: {db[0].name}")
+        
+        return
+    
     if file_type == "ecospold":
         print(f'Database "{database_name}" not yet in project, it will be imported.')
         db = bw.SingleOutputEcospold2Importer(path_to_db, database_name, use_mp=False)
