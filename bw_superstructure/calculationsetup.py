@@ -87,7 +87,6 @@ def get_functional_units(
             print(f"ERROR: Could not find any activity for the given functional unit: \n  product={iproduct}, \n  process={iprocess}, \n  loc={iloc} \n  in database '{idb_name}'")
             has_errors = True
             continue
-        # TODO: more detailed error messages are needed. See issue #160 in the frits.b repository.
 
         # filter for correct location and reference product
         acts_subset = [
