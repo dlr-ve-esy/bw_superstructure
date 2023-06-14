@@ -65,6 +65,8 @@ def get_functional_units(
         not unavailable_dbs
     ), f"the following database names in the functional units from the excel sheet are not in the project: {unavailable_dbs} \n DBs in the project are: {available_dbs}"
 
+    has_errors = False
+
     for (
         idx,
         irow,
@@ -81,13 +83,14 @@ def get_functional_units(
         )  # Note: the filter of the .search() function is a bit buggy for locations and products, therefore we do not use it here.
         # search only does partial matches (searches for sub-strings)
 
-        assert (
-            len(acts) >= 1
-        ), f"Could not find any activity for the given functional unit: \n  product={iproduct}, \n  process={iprocess}, \n  loc={iloc} \n  in database '{idb_name}'"
+        if len(acts) == 0:
+            print(f"ERROR: Could not find any activity for the given functional unit: \n  product={iproduct}, \n  process={iprocess}, \n  loc={iloc} \n  in database '{idb_name}'")
+            has_errors = True
+            continue
         # TODO: more detailed error messages are needed. See issue #160 in the frits.b repository.
 
         # filter for correct location and reference product
-        acts = [
+        acts_subset = [
             iact
             for iact in acts
             if (
@@ -97,13 +100,39 @@ def get_functional_units(
             )
         ]  # ensure exact match of process name (search above does only partial matches (sub-strings))
 
-        assert (
-            len(acts) == 1
-        ), f"found {len(acts)} activities for bw2_activity {iproduct, iprocess, iloc, idb_name} instead of 1 bw2_activity. \n The activities found are: \n {acts}"
+        if len(acts_subset) == 0:
+            no_location = True
+            no_reference_product = True
+            locs = set()
+            ref_prods = set()
 
-        acts = acts[0]
+            for iact in acts:
+                locs.add(iact['location'])
+                ref_prods.add(iact['reference product'])
+                if no_location and iact["location"] == iloc:
+                    no_location = False
+                if no_reference_product and iact["reference product"] == iproduct:
+                    no_reference_product = False
 
-        functional_units.append(acts)
+
+        if no_location or no_reference_product:
+            has_errors = True
+            print("ERROR: found no activity for the given information: \n  product={iproduct}, \n  process={iprocess}, \n  loc={iloc} \n  in database '{idb_name}'")
+        if no_location:
+            print(f'ERROR: requested location "{iloc}" not found. Available locations are: \n{locs}')
+        if no_reference_product:
+            print(f'ERROR: requested reference product "{iproduct}" not found. Available reference products are: \n{ref_prods}')
+
+        if len(acts_subset) > 1:
+            print(f"ERROR: found {len(acts_subset)} activities for bw2_activity product={iproduct}, process={iprocess}, location={iloc}, in {idb_name} instead of 1 bw2_activity. \n The activities found are: \n {acts_subset}")
+            continue
+
+        acts_subset = acts_subset[0]
+
+        functional_units.append(acts_subset)
+
+    if has_errors:
+        exit(78)
 
     return functional_units
 
