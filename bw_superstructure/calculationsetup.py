@@ -66,6 +66,8 @@ def get_functional_units(
     ), f"the following database names in the functional units from the excel sheet are not in the project: {unavailable_dbs} \n DBs in the project are: {available_dbs}"
 
     has_errors = False
+    no_location = False
+    no_reference_product = False
 
     for (
         idx,
