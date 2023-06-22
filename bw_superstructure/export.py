@@ -177,7 +177,10 @@ def write_lcaresults_to_excel(
     )
     df_impacts.to_excel(iwriter, sheet_name="Impacts", index=True)
 
-    iwriter.save()
+    try:
+        iwriter.save()  # for older pandas versions
+    except:
+        iwriter._save() # for newer pandas versions
 
 
 def export_lca_scores(mlca, fp_export_lca_results: Optional[pt.Path] = None):
