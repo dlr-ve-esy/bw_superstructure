@@ -5,6 +5,7 @@ from collections import defaultdict
 from typing import Optional
 
 import brightway2 as bw
+from bw_superstructure.calculationsetup import get_lcia_methods
 
 from bw_superstructure.superstructure.mlca import (
     SuperstructureMLCA,
@@ -145,16 +146,20 @@ def create_excelsheet_calc_setup(bw2_activity, fu_amount: int):
 def create_excelsheet_impacts(
     mlca: SuperstructureMLCA,
     idx_fu: int,
-    impact_categories,
-    impact_cat_units,
-    scenarios,
+    impact_categories: list,
+    impact_cat_units: list,
+    scenarios: list,
+    impact_categories_internal_names: list, 
+    impact_categories_abbreviations: list,
 ):
     "For exporting LCA results. This functions creates and fills the excel sheet called 'Imapcts'."
 
     data = pd.DataFrame(index=impact_categories)
 
+    data["Category name short"] = impact_categories_internal_names
+    data["Category abbreviated"] = impact_categories_abbreviations
+
     data["Unit"] = impact_cat_units
-    # Note: add here something shorter, e.g. method abbreviation, use MethodTuple?
 
     data_lcascores = pd.DataFrame(
         mlca.lca_scores[idx_fu], columns=scenarios, index=impact_categories
@@ -183,16 +188,30 @@ def write_lcaresults_to_excel(
         iwriter._save() # for newer pandas versions
 
 
-def export_lca_scores(mlca, fp_export_lca_results: Optional[pt.Path] = None):
+def export_lca_scores(mlca, fp_export_lca_results: Optional[pt.Path] = None, fp_lcia_methods: Optional[pt.Path] = None):
 
     fp_export_lca_results = create_export_folder(fp_export_lca_results)
 
     scenarios = [iscen for iscen in mlca.scenario_names]
-    impact_categories = [", ".join(bw.Method(imeth).name) for imeth in mlca.methods]
+    
+    impact_categories_bw2 = [bw.Method(imeth).name for imeth in mlca.methods] # tuple(str, str, str) e.g. ("IPCC 2013", "climate change", "GWP 100a")
+    impact_categories = [", ".join(imeth) for imeth in impact_categories_bw2]
     impact_cat_units = [bw.Method(imeth).metadata["unit"] for imeth in mlca.methods]
+    
+    # we retrieve some additional information (shorter names and abbreviations) for the lcia methods to write it into the exported excel files
+    lcia_methods = get_lcia_methods(fp_lcia_methods)
+    lcia_methods_reversed = {method.bw2_object: (method.internal_name, method.internal_abbreviation) for (key, method) in lcia_methods.items()}
+    impact_categories_internal_names = []
+    impact_categories_abbreviations = []
+    
+    for imeth in impact_categories_bw2:
+        if imeth in lcia_methods_reversed:
+            impact_categories_internal_names.append(lcia_methods_reversed[imeth][0])
+            impact_categories_abbreviations.append(lcia_methods_reversed[imeth][1])
+            
 
     fu_name_counts = defaultdict(lambda: 0)
-    # initialize with 0, und nachher +1
+    # initialize with 0, and later do +1
 
     # loop over results and save lca results for each FU in an excel workbook
     idx_fu = 0
@@ -215,7 +234,7 @@ def export_lca_scores(mlca, fp_export_lca_results: Optional[pt.Path] = None):
         df_calc_setup = create_excelsheet_calc_setup(ifu_act, ifu_amount)
 
         df_impacts = create_excelsheet_impacts(
-            mlca, idx_fu, impact_categories, impact_cat_units, scenarios
+            mlca, idx_fu, impact_categories, impact_cat_units, scenarios, impact_categories_internal_names, impact_categories_abbreviations
         )
 
         write_lcaresults_to_excel(

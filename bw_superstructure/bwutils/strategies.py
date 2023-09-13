@@ -83,9 +83,10 @@ def relink_exchanges_existing_db(db: bw.Database, old: str, other: bw.Database) 
         # del bw.databases[db.name]  # we delete the db again, since it would be empty
 
         warnings.warn(
-            f'\n \n --- WARNING --- : \n 0 exchanges could be relinked from original background database "{old}" to new background database "{other.name}".'
+            f'\n \n --- WARNING --- : \n For DB "{db.name}": 0 exchanges could be relinked from original background database "{old}" to new background database "{other.name}".'
             f"If the new Database is a superstructure for scenario LCA calculation, your scenario LCA calculation may fail."
-            f'Please, check your databases. The new database "{other.name}" might be empty. \n'
+            f'Please, check your databases. The new database "{other.name}" might be empty. \n \n'
+            f'If you set "create_new_db_relinked"=False, this warning might be less relevant, since your already existing DB might have already been relinked and thus does not require additional relinking. \n '
         )
 
     db.process()

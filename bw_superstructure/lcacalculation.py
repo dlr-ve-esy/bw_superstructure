@@ -60,6 +60,7 @@ def calculate_scenario_LCA(
     sdf_sheet_idx=0,
     export_results_to_excel=True,
     fp_export_lca_results: Optional[pt.Path] = None,  #: pt.Path,
+    fp_lcia_methods: Optional[pt.Path] = None,
 ):
 
     if export_results_to_excel:
@@ -73,6 +74,6 @@ def calculate_scenario_LCA(
     mlca, contributions, mc = calculate_lca_results(calc_setup_name, scenario_diff_df)
 
     if export_results_to_excel:
-        export_lca_scores(mlca, fp_export_lca_results)
+        export_lca_scores(mlca, fp_export_lca_results, fp_lcia_methods)
 
     return mlca, contributions, mc

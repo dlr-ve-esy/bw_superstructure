@@ -47,7 +47,8 @@ fp_export_lca_results = None  # if None, a default is created in the export fold
 # )  # optional; if not provided, the default is the exports folder
 
 additional_functional_units = [("heat, future",	"wood pellets, burned in stirling heat and power co-generation unit, 3kW electrical, future", "CH",	"ecoinvent38_cutoff"),
-                               ("electricity, high voltage", "electricity production, nuclear, boiling water reactor_4BioG_OpO", "DE", "eco_export_SS")]
+                               ("electricity, high voltage", "electricity production, nuclear, boiling water reactor", "DE", "ecoinvent38_cutoff"),
+                               ]
 
 
 ######### LCA calculation
@@ -81,6 +82,7 @@ mlca, contributions, mc = bwss.calculate_scenario_LCA(
     path_to_SDF,
     export_results_to_excel=export_results_to_excel,
     fp_export_lca_results=fp_export_lca_results,
+    fp_lcia_methods=fp_lcia_methods,
 )  # calculates the LCA results for all functional units, LCIA methods and scenarios (as specified in the scenario difference file)
 
 # if desired, the user can export the LCA-results via a separate function:

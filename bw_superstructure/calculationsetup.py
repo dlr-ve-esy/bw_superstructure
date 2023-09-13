@@ -238,4 +238,4 @@ def create_calculation_setup(
 
     print(
         f"\n Created calculation setup: {calc_setup_name} \n {len(functional_units)} functional units: \n {[ifu for ifu in functional_units]} \n \n {len(lcia_methods)} LCIA Methods: \n {[imeth.internal_name for imeth in lcia_methods.values()]}"
-    )  # TODO improve print of FUs
+    )  # TODO: improve print of FUs
