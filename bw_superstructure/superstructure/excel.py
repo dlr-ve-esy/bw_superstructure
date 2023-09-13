@@ -21,17 +21,28 @@ def convert_tuple_str(x):
         return x
 
 
-def get_header_index(document_path: Union[str, Path], import_sheet: int):
+def get_header_index(document_path: Union[str, Path], import_sheet: Union[int, str]):
     """Retrieves the line index for the column headers, will raise an
     exception if not found in the first 10 rows.
     """
     # Note: source: based on: activity-browser:
     # function from: Lib\site-packages\activity_browser\bwutils\superstructure\excel.py
     # branch: activity-browser-dev; version: 2022.11.16
+    # adaptations: allow for import_sheet being a string or an integer
 
     try:
-        wb = openpyxl.load_workbook(filename=document_path, read_only=True)
-        sheet = wb.worksheets[import_sheet]
+        wb = openpyxl.load_workbook(filename=document_path, read_only=True)        
+        # sheet = wb.worksheets[import_sheet] # original
+        
+        # distinction between int and string        
+        sheets = wb.sheetnames
+        if isinstance(import_sheet, int):
+            assert(import_sheet<len(sheets), f'The sheet index of "{import_sheet}" is not available in the file "{document_path}". Only {len(sheets)} sheets are available')
+            sheet = wb.worksheets[import_sheet]
+        else: # we assume it is a string here
+            assert(import_sheet in sheets, f'The sheet name of "{import_sheet}" is not available in the file "{document_path}". Only the following names: {len(sheets)} are available')
+            sheet = wb[import_sheet]
+        
         for i in range(10):
             value = sheet.cell(i + 1, 1).value
             if isinstance(value, str) and value.startswith("from activity name"):
@@ -57,7 +68,7 @@ def valid_cols(name: str) -> bool:
     return False if name.startswith("#") else True
 
 
-def import_from_excel(document_path: Union[str, Path], import_sheet: int = 1):
+def import_from_excel(document_path: Union[str, Path], import_sheet: Union[int, str] = 1):
     """Import all of the exchanges and their scenario amounts from a given
     document and sheet index.
 
@@ -75,6 +86,7 @@ def import_from_excel(document_path: Union[str, Path], import_sheet: int = 1):
     # Note: source: based on: activity-browser:
     # function from: Lib\site-packages\activity_browser\bwutils\superstructure\excel.py
     # branch: activity-browser-dev; version: 2022.11.16
+    # adaption: allow for import_sheet being a string or an integer
 
     header_idx = get_header_index(document_path, import_sheet)
     data = pd.read_excel(

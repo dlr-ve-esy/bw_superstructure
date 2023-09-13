@@ -1,6 +1,6 @@
 ﻿import pandas as pd
 import pathlib as pt
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 from bw_superstructure.export import (
     export_lca_scores,
@@ -20,10 +20,10 @@ from bw_superstructure.bwutils.calculations import do_LCA_calculations
 
 
 def get_scenario_difference_dataframe(
-    path_to_SDF: pt.Path, sheet_idx=0, export_to_excel=False
+    path_to_SDF: pt.Path, import_sheet: Union[str, int]=0, export_to_excel=False
 ) -> pd.DataFrame:
 
-    scenario_diff_file = import_from_excel(path_to_SDF, sheet_idx)
+    scenario_diff_file = import_from_excel(path_to_SDF, import_sheet)
 
     scenario_diff_df = format_dataframe(scenario_diff_file)
     scenario_diff_df = remove_cols_from_sdf(
@@ -57,7 +57,7 @@ def calculate_lca_results(
 def calculate_scenario_LCA(
     calc_setup_name: str,
     path_to_SDF: pt.Path,
-    sdf_sheet_idx=0,
+    sdf_sheet: Union[str, int]=0,
     export_results_to_excel=True,
     fp_export_lca_results: Optional[pt.Path] = None,  #: pt.Path,
     fp_lcia_methods: Optional[pt.Path] = None,
@@ -69,7 +69,7 @@ def calculate_scenario_LCA(
         )  # we check early whether the export folder is already existing to reduce waiting time for the user
 
     scenario_diff_df = get_scenario_difference_dataframe(
-        path_to_SDF, sheet_idx=sdf_sheet_idx
+        path_to_SDF, import_sheet=sdf_sheet
     )
     mlca, contributions, mc = calculate_lca_results(calc_setup_name, scenario_diff_df)
 
