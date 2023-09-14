@@ -37,10 +37,10 @@ def get_header_index(document_path: Union[str, Path], import_sheet: Union[int, s
         # distinction between int and string        
         sheets = wb.sheetnames
         if isinstance(import_sheet, int):
-            assert(import_sheet<len(sheets), f'The sheet index of "{import_sheet}" is not available in the file "{document_path}". Only {len(sheets)} sheets are available')
+            assert import_sheet<len(sheets), f'The sheet index of "{import_sheet}" is not available in the file "{document_path}". Only {len(sheets)} sheets are available'
             sheet = wb.worksheets[import_sheet]
         else: # we assume it is a string here
-            assert(import_sheet in sheets, f'The sheet name of "{import_sheet}" is not available in the file "{document_path}". Only the following names: {len(sheets)} are available')
+            assert import_sheet in sheets, f'The sheet name of "{import_sheet}" is not available in the file "{document_path}". Only the following names: {len(sheets)} are available'
             sheet = wb[import_sheet]
         
         for i in range(10):

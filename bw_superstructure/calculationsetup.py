@@ -48,6 +48,8 @@ def get_functional_units(
     if fp_functional_units:
         fu_input = pd.read_excel(fp_functional_units, header=0)
         fu_input.dropna(axis="index", how="all", inplace=True)
+        print(f'Imported functional units from the file: "{fp_functional_units}"')
+
     else:
         fu_input = pd.DataFrame(fu_input, columns=['product', 'process', 'location', 'database'])
 
@@ -215,7 +217,7 @@ def create_calculation_setup(
     """
     
     if additional_functional_units:
-        assert len(additional_functional_units[0]) == 4, 'the provided additional functional units are not havint enough fields.\nPlease provide a list of tuples with each tuple containing in the given order the information: \nprocess, product, location and database.'
+        assert len(additional_functional_units[0]) == 4, 'the provided additional functional units do not have enough fields.\n Please provide a list of tuples with each tuple containing in the given order the information: \n product, process, location and database.'
 
 
     functional_units = get_functional_units(
