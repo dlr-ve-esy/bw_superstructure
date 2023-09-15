@@ -38,6 +38,10 @@ def get_functional_units(
         list: all functional units in the excel file from fp_functional_units or in the list of tuples for additional_functional_units
     """
 
+    if  fp_functional_units is None and additional_functional_units is None:
+        print(f"ERROR: No functional units are provided by the user. Both 'fp_functional_units' and 'additional_functional_units' are 'None'. Please specify functional units via one or both of the two options.")
+        exit(78)
+
     functional_units = []
 
     additional_functional_units = [] if additional_functional_units is None else additional_functional_units
@@ -55,7 +59,7 @@ def get_functional_units(
 
     fu_input = pd.merge(fu_input, additional_functional_units, how='outer', on=['process', 'product', 'location', 'database'])
     
-    assert len(fu_input) > 0, f"no functional units are read in. \n The filepath to functional units is: {fp_functional_units} \n The additional functional units are: {additional_functional_units}"
+    assert len(fu_input) > 0, f"no functional units could be read in. \n The filepath to functional units is: {fp_functional_units} \n The additional functional units are: {additional_functional_units}"
 
     selected_dbs = list(fu_input["database"].unique())
     print("DBs of functional units:", selected_dbs)
