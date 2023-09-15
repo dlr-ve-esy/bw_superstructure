@@ -25,6 +25,7 @@ class SuperstructureMLCA(MLCA):
     # class: class SuperstructureMLCA(MLCA)
     # from: Lib\site-packages\activity_browser\bwutils\superstructure\mlca.py
     # branch: activity-browser-dev; version: 2022.11.16
+    # adaptations: assert message for assert not df.empty, f"Filtering unused flows removed all of the scenario data."
 
     matrices = {
         "biosphere": "biosphere_matrix",
@@ -42,7 +43,7 @@ class SuperstructureMLCA(MLCA):
 
         # Filter dataframe for keys that do not occur in the LCA matrix.
         df = filter_databases_indexed_superstructure(df, self.all_databases)
-        assert not df.empty, "Filtering unused flows removed all of the scenario data."
+        assert not df.empty, f"Filtering unused flows removed all of the scenario data. The supply chain of the reference flows probably does not have any inputs from the superstructure database. You have several options: \n     a. Relink the reference flows to the superstructure database. \n     b. Define a process from the superstructure database as a reference flow. \n     c. Double-check the database names in the SDF, whether they match to your databases and the reference flows."
 
         self.indices, self.values = arrays_from_indexed_superstructure(df)
         # Note: Using the mapping scheme from brightway and presamples,
