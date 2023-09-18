@@ -95,7 +95,7 @@ def relink_database_to_new_background(
     db_name_relinked: str,
     db_name_old_bg: str,
     db_name_new_bg: str,
-    create_new_db_relinked=True,
+    relink_output_db_witout_copying_it: bool = True,
     fp_import_new_bg_db: Optional[pt.Path] = None,
     filetype_import_new_bg_db: Optional[str] = None,
 ):
@@ -106,14 +106,17 @@ def relink_database_to_new_background(
         filetype_import_db=filetype_import_new_bg_db,
     )
 
-    if not create_new_db_relinked:
+    if relink_output_db_witout_copying_it:
+        # relink already existing db db_name_relinked directly
         assert (
             db_name_relinked in bw.databases
         ), f"{db_name_relinked} not in databases: {bw.databases}"
         print(f"using existing DB: {db_name_relinked}")
 
-    if create_new_db_relinked:
-        # copy original DB, new name
+    else:
+        # copy original DB db_name and save with new name=db_name_relinked
+        assert db_name_relinked!=db_name, f"\n 'db_name_relinked' is the same as 'output_dbname' which is set to: {db_name}. Moreover, 'relink_output_db_witout_copying_it' is set to False. This is a problem, since frits.b will delete the existing db called db_name_relinked, but at the same time needs to copy it, which is technically impossible. You have the following options: \n    a. Choose a different name for 'db_name_relinked' \n    b. Set 'relink_output_db_witout_copying_it' to 'True', such that the already existing output DB called '{db_name}' is directly relinked without creating a copy of it. "
+
         if db_name_relinked in bw.databases:
             del bw.databases[db_name_relinked]
             print(f"deleted database: {db_name_relinked}")

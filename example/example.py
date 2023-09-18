@@ -16,7 +16,7 @@ db_original_name = (
 db_name_relinked = (
     "eco_export_SS"  # name if the original db was relinked and newly created
 )
-create_new_db_relinked = True  # if True, an already existing DB with the name of db_name_relinked will be deleted, and a new db_name_relinked will be created. if False, the already existing DB of the name db_name_relinked will be used
+relink_output_db_witout_copying_it = False  # if False, an already existing DB with the name of db_name_relinked will be deleted, and a new db_name_relinked will be created by copying and relinking an already existing db. if True, the already existing DB of the name db_name_relinked will be used and directly relinked without making a copy of it
 
 db_name_old_bg = (
     "ecoinvent38_cutoff"  # name of the old (i.e. current)  BG-DB of the original DB
@@ -59,16 +59,16 @@ bw.projects.set_current(project_name)
 if export_results_to_excel:
     fp_export_lca_results = check_export_folder_path(fp_export_lca_results)
 
-bwss.relink_database_to_new_background(
-    db_original_name,
-    db_name_relinked,
-    db_name_old_bg,
-    db_name_new_bg,
-    create_new_db_relinked=create_new_db_relinked,
-    fp_import_new_bg_db=fp_import_new_bg_db,  # None
-    filetype_import_new_bg_db=filetype_import_new_bg_db,  # None
-)  # relinking the DB is optional,
 
+bwss.relink_database_to_new_background(
+    db_name=db_original_name,
+    db_name_relinked=db_name_relinked,
+    db_name_old_bg=db_name_old_bg,
+    db_name_new_bg=db_name_new_bg,
+    relink_output_db_witout_copying_it=relink_output_db_witout_copying_it,
+    fp_import_new_bg_db=fp_import_new_bg_db,   # None
+    filetype_import_new_bg_db=filetype_import_new_bg_db,  # None
+ )  # relinking the DB is optional,
 
 bwss.create_calculation_setup(
     calc_setup_name,
