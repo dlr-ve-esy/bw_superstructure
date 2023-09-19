@@ -1,7 +1,7 @@
 ﻿import pandas as pd
 import pathlib as pt
 
-from typing import Dict
+from typing import Dict, Union
 from collections import namedtuple
 from ruamel.yaml import YAML
 
@@ -26,6 +26,7 @@ MethodTuple = namedtuple(
 
 def get_functional_units(
     fp_functional_units: pt.Path = None,
+    functional_units_sheet: Union[str, int] = 0,
     additional_functional_units: list[tuple[str]] = None,
 ) -> list:
     """Gets the functional units which can be read in either via the fp_functional_units or via additional_functional_units, or from both arguments at the same time.
@@ -38,28 +39,46 @@ def get_functional_units(
         list: all functional units in the excel file from fp_functional_units or in the list of tuples for additional_functional_units
     """
 
-    if  fp_functional_units is None and additional_functional_units is None:
-        print(f"ERROR: No functional units are provided by the user. Both 'fp_functional_units' and 'additional_functional_units' are 'None'. Please specify functional units via one or both of the two options.")
+    if fp_functional_units is None and additional_functional_units is None:
+        print(
+            f"ERROR: No functional units are provided by the user. Both 'fp_functional_units' and 'additional_functional_units' are 'None'. Please specify functional units via one or both of the two options."
+        )
         exit(78)
 
     functional_units = []
 
-    additional_functional_units = [] if additional_functional_units is None else additional_functional_units
-    additional_functional_units = pd.DataFrame(additional_functional_units, columns=['product', 'process', 'location', 'database'])
+    additional_functional_units = (
+        [] if additional_functional_units is None else additional_functional_units
+    )
+    additional_functional_units = pd.DataFrame(
+        additional_functional_units,
+        columns=["product", "process", "location", "database"],
+    )
 
     fu_input = []
-    
+
     if fp_functional_units:
-        fu_input = pd.read_excel(fp_functional_units, header=0)
+        fu_input = pd.read_excel(
+            fp_functional_units, header=0, sheet_name=functional_units_sheet
+        )
         fu_input.dropna(axis="index", how="all", inplace=True)
         print(f'Imported functional units from the file: "{fp_functional_units}"')
 
     else:
-        fu_input = pd.DataFrame(fu_input, columns=['product', 'process', 'location', 'database'])
+        fu_input = pd.DataFrame(
+            fu_input, columns=["product", "process", "location", "database"]
+        )
 
-    fu_input = pd.merge(fu_input, additional_functional_units, how='outer', on=['process', 'product', 'location', 'database'])
-    
-    assert len(fu_input) > 0, f"no functional units could be read in. \n The filepath to functional units is: {fp_functional_units} \n The additional functional units are: {additional_functional_units}"
+    fu_input = pd.merge(
+        fu_input,
+        additional_functional_units,
+        how="outer",
+        on=["process", "product", "location", "database"],
+    )
+
+    assert (
+        len(fu_input) > 0
+    ), f"no functional units could be read in. \n The filepath to functional units is: {fp_functional_units} \n The additional functional units are: {additional_functional_units}"
 
     selected_dbs = list(fu_input["database"].unique())
     print("DBs of functional units:", selected_dbs)
@@ -92,7 +111,9 @@ def get_functional_units(
         # search only does partial matches (searches for sub-strings)
 
         if len(acts) == 0:
-            print(f"ERROR: Could not find any activity for the given functional unit: \n  product={iproduct}, \n  process={iprocess}, \n  loc={iloc} \n  in database '{idb_name}'")
+            print(
+                f"ERROR: Could not find any activity for the given functional unit: \n  product={iproduct}, \n  process={iprocess}, \n  loc={iloc} \n  in database '{idb_name}'"
+            )
             has_errors = True
             continue
 
@@ -114,24 +135,31 @@ def get_functional_units(
             ref_prods = set()
 
             for iact in acts:
-                locs.add(iact['location'])
-                ref_prods.add(iact['reference product'])
+                locs.add(iact["location"])
+                ref_prods.add(iact["reference product"])
                 if no_location and iact["location"] == iloc:
                     no_location = False
                 if no_reference_product and iact["reference product"] == iproduct:
                     no_reference_product = False
 
-
         if no_location or no_reference_product:
             has_errors = True
-            print("ERROR: found no activity for the given information: \n  product={iproduct}, \n  process={iprocess}, \n  loc={iloc} \n  in database '{idb_name}'")
+            print(
+                "ERROR: found no activity for the given information: \n  product={iproduct}, \n  process={iprocess}, \n  loc={iloc} \n  in database '{idb_name}'"
+            )
         if no_location:
-            print(f'ERROR: requested location "{iloc}" not found. Available locations are: \n{locs}')
+            print(
+                f'ERROR: requested location "{iloc}" not found. Available locations are: \n{locs}'
+            )
         if no_reference_product:
-            print(f'ERROR: requested reference product "{iproduct}" not found. Available reference products are: \n{ref_prods}')
+            print(
+                f'ERROR: requested reference product "{iproduct}" not found. Available reference products are: \n{ref_prods}'
+            )
 
         if len(acts_subset) > 1:
-            print(f"ERROR: found {len(acts_subset)} activities for bw2_activity product={iproduct}, process={iprocess}, location={iloc}, in {idb_name} instead of 1 bw2_activity. \n The activities found are: \n {acts_subset}")
+            print(
+                f"ERROR: found {len(acts_subset)} activities for bw2_activity product={iproduct}, process={iprocess}, location={iloc}, in {idb_name} instead of 1 bw2_activity. \n The activities found are: \n {acts_subset}"
+            )
             continue
 
         acts_subset = acts_subset[0]
@@ -209,6 +237,7 @@ def create_calculation_setup(
     calc_setup_name: str,
     fp_lcia_methods: pt.Path,
     fp_functional_units: pt.Path = None,
+    functional_units_sheet: Union[str, int] = 0,
     additional_functional_units: list[tuple[str]] = None,
 ):
     """creates a calculation setup using brightway2. Functional units can be read in either via the fp_functional_units or via additional_functional_units, or from both arguments at the same time.
@@ -217,15 +246,17 @@ def create_calculation_setup(
         calc_setup_name (str): name of the calculation setup.
         lcia_methods (pt.Path): path to a yaml file providing lcia methods
         fp_functional_units (pt.Path, optional): filepath to an excel file containing the functional units with the headers ['product', 'process', 'location', 'database']. Defaults to None.
-        additional_functional_units (list[tuple[str]], optional): Lists additional functional units in the form of tuples. Each tuple contains the strings for product, process, location, database. Defaults to None.    
+        additional_functional_units (list[tuple[str]], optional): Lists additional functional units in the form of tuples. Each tuple contains the strings for product, process, location, database. Defaults to None.
     """
-    
-    if additional_functional_units:
-        assert len(additional_functional_units[0]) == 4, 'the provided additional functional units do not have enough fields.\n Please provide a list of tuples with each tuple containing in the given order the information: \n product, process, location and database.'
 
+    if additional_functional_units:
+        assert (
+            len(additional_functional_units[0]) == 4
+        ), "the provided additional functional units do not have enough fields.\n Please provide a list of tuples with each tuple containing in the given order the information: \n product, process, location and database."
 
     functional_units = get_functional_units(
         fp_functional_units,
+        functional_units_sheet,
         additional_functional_units=additional_functional_units,
     )
 
