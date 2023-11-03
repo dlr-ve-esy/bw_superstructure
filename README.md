@@ -7,10 +7,15 @@
 
 **Table of Contents**
 
-<!-- - [Installation](#installation)
-- [License](#license) -->
 
-[[_TOC_]]
+- [bw\_superstructure](#bw_superstructure)
+  - [Installation](#installation)
+  - [Working features](#working-features)
+  - [Requirements](#requirements)
+  - [Features missing so far](#features-missing-so-far)
+  - [Relation to the activity-browser (AB)](#relation-to-the-activity-browser-ab)
+  - [License](#license)
+
 
 ## Installation
 
@@ -31,7 +36,7 @@ pip install --no-deps -I .\dist\bw_superstructure-0.0.1-py3-none-any.whl
 - calculating scenario LCA scores with a superstructure and a scenario-difference-file
 - exporting the LCA scores for the scenarios for each functional unit to an excel workbook
 
-### Requirements
+## Requirements
 - a working BW2-project with databases
 - functional units specified in an excel file (see inputs in example)
 - impact categories specified in a yaml file (see inputs in example)
