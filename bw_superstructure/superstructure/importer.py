@@ -29,6 +29,7 @@ class ScenarioImporter():
 		self.tables = []
 
 	def load_scenarios(self, scenario_files, kind):
+    # Load several scenario files and combine them into a single scenario file
 		for file, sheet_id in scenario_files:
 			self.tables.append(import_from_excel(file, sheet_id))
 		data = [df for df in self.tables if not df.empty]
