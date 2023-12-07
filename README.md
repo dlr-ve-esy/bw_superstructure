@@ -5,7 +5,7 @@
 
 -----
 
-**Table of Contents**
+**Contents**
 
 - [bw\_superstructure](#bw_superstructure)
   - [Introduction](#introduction)
@@ -17,6 +17,8 @@
   - [License](#license)
   - [Contribution](#contribution)
   - [Contact](#contact)
+
+
 ## Introduction
 
 The brightway-superstructure library allows to conduct scenario LCA calculations using the approach of the [superstructure](https://link.springer.com/article/10.1007/s11367-021-01974-2), as it has been developed for the [activity-browser](https://github.com/LCA-ActivityBrowser/activity-browser) (AB). 
