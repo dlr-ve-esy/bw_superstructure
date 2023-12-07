@@ -33,6 +33,7 @@ def get_functional_units(
 
     Args:
         fp_functional_units (pt.Path, optional): filepath to an excel file containing the functional units with the headers ['product', 'process', 'location', 'database']. Defaults to None.
+        functional_units_sheet (str, int, optional): string or position index for the excel sheet to use in the excel file specified in fp_functional_units
         additional_functional_units (list[tuple[str]], optional): Lists additional functional units in the form of tuples. Each tuple contains the strings for product, process, location, database. Defaults to None.
 
     Returns:
