@@ -88,7 +88,7 @@ def merge_flows_to_self(df: pd.DataFrame) -> pd.DataFrame:
             vals = prod.values - tech.values
 
             # write the corrected values to the right cells
-            # TODO figure out how to easily write 'per row' instead of 'per cell', but the below loop works for now
+            # TODO: figure out how to easily write 'per row' instead of 'per cell', but the below loop works for now
             for i, elem in enumerate(vals.T):
                 df.loc[prod_idx, scenario_cols[i]] = elem[0]
         # drop the 'technosphere' flows

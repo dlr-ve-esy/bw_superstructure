@@ -152,7 +152,7 @@ class MetaDataStore(object):
 
     def reset_metadata(self) -> None:
         """Deletes metadata when the project is changed."""
-        # todo: metadata could be collected across projects...
+
         print("Reset metadata.")
         self.dataframe = pd.DataFrame()
         self.databases = set()

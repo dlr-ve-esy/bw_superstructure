@@ -29,13 +29,10 @@ def wrap_text(string: str, max_length: int = 80) -> str:
     # Note: source: based on: activity-browser:
     # function from: Lib\site-packages\activity_browser\bwutils\commontasks.py
     # branch: activity-browser-dev; version: 2022.11.16
-    # adaptations: fold unactivated
+    # adaptations: fold unactivated, textwrap.fill() removed
 
     def fold(line: str) -> str:
         return line
-        # return textwrap.fill(
-        #     line, width=max_length, break_long_words=True, replace_whitespace=False
-        # )  # TODO: delete this function later in the other functions, since not needed for us probably (just for GUI)
 
     return "\n".join(map(fold, string.splitlines()))
 

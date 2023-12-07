@@ -169,7 +169,6 @@ class MLCA(object):
             )
         )
 
-        # TODO: get rid of the below
         self.func_unit_translation_dict = {
             str(bw.get_activity(list(func_unit.keys())[0])): func_unit
             for func_unit in self.func_units
