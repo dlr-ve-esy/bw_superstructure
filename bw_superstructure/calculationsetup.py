@@ -107,7 +107,7 @@ def get_functional_units(
         iloc = irow["location"]
 
         acts = bw.Database(idb_name).search(
-            iprocess,
+            iprocess, limit=1000000
         )  # Note: the filter of the .search() function is a bit buggy for locations and products, therefore we do not use it here.
         # search only does partial matches (searches for sub-strings)
 
