@@ -25,16 +25,22 @@ The brightway-superstructure library allows to conduct scenario LCA calculations
 
 ## Installation
 
+First install python 3.10 and pip. 
+If you use conda-forge, please add the channels `bsteubing` and `cmutel` for the brightway dependencies.
+
 For installation via pip use:
 ```console
 pip install bw-superstructure
 ```
 
-To install from git source use hatch:
+To install from git source use hatch:  
 ```console
+pip install hatch
 hatch build
-pip install --no-deps -I .\dist\bw_superstructure-0.0.1-py3-none-any.whl
+pip install -I .\dist\bw_superstructure-1.0.1-py3-none-any.whl
 ```
+
+If you would like to have another version, replace `1.0.1` with the desired version number.
 
 ## Features
 
