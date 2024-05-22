@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Harpprecht
+    given-names: Carina
+    orcid: https://orcid.org/0000-0002-2878-0139
+  - family-names: Fuchs
+    given-names: Benjamin
+    orcid: https://orcid.org/0000-0002-7820-851X
+title: "bw-superstructure"
+version: 1.0.1
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.11199475
+date-released: 2024-05-15
